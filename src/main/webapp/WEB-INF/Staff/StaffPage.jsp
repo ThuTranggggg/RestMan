@@ -38,7 +38,7 @@
 
         .header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 24px 40px;
+            padding: 9px 30px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
             display: flex;
             justify-content: space-between;
@@ -117,13 +117,13 @@
         }
 
         .menu-btn {
-            padding: 30px 20px;
+            padding: 20px 16px;
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid rgba(15, 23, 42, 0.1);
             border-radius: 12px;
             cursor: pointer;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #0f172a;
             transition: all 200ms ease;
@@ -180,7 +180,7 @@
 <body>
 <div class="wrap">
     <div class="header">
-        <h1>Trang chủ Nhân viên</h1>
+        <h1>RestMan</h1>
         <div class="user-info">
             <div class="user-name">
                 <strong><%= staff.getUser().getFullName() %></strong>
@@ -195,15 +195,12 @@
 
     <div class="content">
         <div class="staff-menu">
-            <h2>Chào mừng bạn!</h2>
-            <p>Hãy chọn chức năng cần thực hiện</p>
+            <h2>Trang chủ nhân viên</h2>
+            <p>Hãy thanh toán hóa đơn cho khách ở đây nhé!</p>
 
             <div class="menu-buttons">
                 <a href="<%= request.getContextPath() %>/searchTable" class="menu-btn primary">
-                    💳 Thanh toán hóa đơn
-                </a>
-                <a href="<%= request.getContextPath() %>/staffPage" class="menu-btn">
-                    📊 Báo cáo (sắp có)
+                    Thanh toán
                 </a>
             </div>
         </div>

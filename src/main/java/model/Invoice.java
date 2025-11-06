@@ -1,72 +1,56 @@
 package model;
 
 import java.time.LocalDateTime;
-import java.io.Serializable;
 
-public class Invoice implements Serializable {
-    private int id;
-    private LocalDateTime datetime;
+public class Invoice extends Order {
+    private int invoiceId;  // Invoice ID từ tblInvoice
+    private float total;
+    private Server server;  // FK tới Server (nhân viên phục vụ)
     private int bonusPoint;
-    private Order order;  // FK tới Order
-    private Server server;  // FK tới Server (người lập hoá đơn)
-    private Staff staff;  // FK tới Staff (nhân viên bán hàng)
+    private LocalDateTime datetime;  // Thời gian tạo hóa đơn (khi nhân viên xác nhận)
 
     public Invoice() {
+        super();
     }
 
-    public Invoice(LocalDateTime datetime, int bonusPoint, Order order, Server server) {
-        this.datetime = datetime;
-        this.bonusPoint = bonusPoint;
-        this.order = order;
+    public Invoice(Table table, Customer customer, float total, Server server, int bonusPoint) {
+        super(table, customer);
+        this.total = total;
         this.server = server;
+        this.bonusPoint = bonusPoint;
+        this.datetime = LocalDateTime.now();
     }
 
-    public Invoice(int id, LocalDateTime datetime, int bonusPoint, Order order, Server server) {
-        this.id = id;
-        this.datetime = datetime;
-        this.bonusPoint = bonusPoint;
-        this.order = order;
+    public Invoice(int id, Table table, Customer customer, float total, Server server, int bonusPoint) {
+        super(id, table, customer);
+        this.total = total;
         this.server = server;
-    }
-
-    public Invoice(int id, LocalDateTime datetime, int bonusPoint, Order order, Staff staff) {
-        this.id = id;
-        this.datetime = datetime;
         this.bonusPoint = bonusPoint;
-        this.order = order;
-        this.staff = staff;
+        this.datetime = LocalDateTime.now();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(LocalDateTime datetime) {
+    public Invoice(int id, Table table, Customer customer, float total, Server server, int bonusPoint, LocalDateTime datetime) {
+        super(id, table, customer);
+        this.total = total;
+        this.server = server;
+        this.bonusPoint = bonusPoint;
         this.datetime = datetime;
     }
 
-    public int getBonusPoint() {
-        return bonusPoint;
+    public int getInvoiceId() {
+        return invoiceId;
     }
 
-    public void setBonusPoint(int bonusPoint) {
-        this.bonusPoint = bonusPoint;
+    public void setInvoiceId(int invoiceId) {
+        this.invoiceId = invoiceId;
     }
 
-    public Order getOrder() {
-        return order;
+    public float getTotal() {
+        return total;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setTotal(float total) {
+        this.total = total;
     }
 
     public Server getServer() {
@@ -77,23 +61,32 @@ public class Invoice implements Serializable {
         this.server = server;
     }
 
-    public Staff getStaff() {
-        return staff;
+    public int getBonusPoint() {
+        return bonusPoint;
     }
 
-    public void setStaff(Staff staff) {
-        this.staff = staff;
+    public void setBonusPoint(int bonusPoint) {
+        this.bonusPoint = bonusPoint;
+    }
+
+    public LocalDateTime getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(LocalDateTime datetime) {
+        this.datetime = datetime;
     }
 
     @Override
     public String toString() {
         return "Invoice{" +
-                "id=" + id +
+                "id=" + this.getId() +
+                ", customer=" + this.getCustomer() +
+                ", table=" + this.getTable() +
                 ", datetime=" + datetime +
+                ", total=" + total +
                 ", bonusPoint=" + bonusPoint +
-                ", order=" + order +
                 ", server=" + server +
-                ", staff=" + staff +
                 '}';
     }
 }

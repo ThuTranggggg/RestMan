@@ -47,12 +47,12 @@ public class InvoiceServlet extends HttpServlet {
                 return;
             }
             
-            // Lấy chi tiết đơn hàng
+            // Lấy chi tiết đơn hàng (dùng order id từ invoice)
             OrderDAO orderDAO = new OrderDAO();
-            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(invoice.getOrder().getId());
+            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(invoice.getId());
             
-            // Tính tổng tiền
-            double total = orderDAO.calculateOrderTotal(invoice.getOrder().getId());
+            // Tính tổng tiền (dùng order id từ invoice)
+            double total = orderDAO.calculateOrderTotal(invoice.getId());
             
             request.setAttribute("invoice", invoice);
             request.setAttribute("orderDetails", orderDetails);

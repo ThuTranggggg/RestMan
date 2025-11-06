@@ -197,10 +197,6 @@
             <button type="submit" class="btn btn-primary">Đăng nhập</button>
         </div>
     </form>
-
-    <div class="back-link">
-        <a href="<%= request.getContextPath() %>/">← Quay lại</a>
-    </div>
 </div>
 </body>
 </html>

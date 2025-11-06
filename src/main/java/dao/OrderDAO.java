@@ -5,6 +5,7 @@ import model.OrderDetail;
 import model.Product;
 import model.Customer;
 import model.Table;
+import model.Membercard;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ public class OrderDAO extends DAO {
      */
     public List<OrderDetail> getOrderDetails(int orderId) throws SQLException {
         List<OrderDetail> details = new ArrayList<>();
-        String sql = "SELECT od.id, od.quantity, od.status, od.tblProductid, " +
+        String sql = "SELECT od.id, od.quantity, od.tblProductid, " +
                      "p.id as product_id, p.name, p.price, p.type, p.imageUrl " +
                      "FROM tblOrderDetail od " +
                      "INNER JOIN tblProduct p ON od.tblProductid = p.id " +
@@ -37,12 +38,16 @@ public class OrderDAO extends DAO {
                 product.setType(rs.getString("p.type"));
                 product.setImageUrl(rs.getString("p.imageUrl"));
                 
+                // ✅ FIX: Tạo Order object (không null)
+                Order order = new Order();
+                order.setId(orderId);
+                
                 OrderDetail detail = new OrderDetail(
                     rs.getInt("od.id"),
                     rs.getInt("od.quantity"),
-                    rs.getString("od.status"),
+                    "PENDING",  // Status mặc định là PENDING
                     product,
-                    null
+                    order  // ✅ order không null
                 );
                 details.add(detail);
             }
@@ -54,7 +59,7 @@ public class OrderDAO extends DAO {
      * Tạo đơn hàng mới
      */
     public int createOrder(int tableId, int customerId) throws SQLException {
-        String sql = "INSERT INTO tblOrder (tblTableid, tblCustomertblUserid, created_at) VALUES (?, ?, NOW())";
+        String sql = "INSERT INTO tblOrder (tblTableid, tblCustomertblUserid) VALUES (?, ?)";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, tableId);
@@ -99,7 +104,7 @@ public class OrderDAO extends DAO {
         }
         
         // Thêm sản phẩm mới
-        String insertSql = "INSERT INTO tblOrderDetail (tblOrderid, tblProductid, quantity, status) VALUES (?, ?, ?, 'PENDING')";
+        String insertSql = "INSERT INTO tblOrderDetail (tblOrderid, tblProductid, quantity) VALUES (?, ?, ?)";
         try (PreparedStatement ps = getConnection().prepareStatement(insertSql)) {
             ps.setInt(1, orderId);
             ps.setInt(2, productId);
@@ -141,13 +146,14 @@ public class OrderDAO extends DAO {
      * Lấy thông tin Order đầy đủ theo Order ID
      */
     public Order getOrderById(int orderId) throws SQLException {
-        String sql = "SELECT o.id, o.tblTableid, o.tblCustomertblUserid, o.created_at, " +
+        String sql = "SELECT o.id, o.tblTableid, o.tblCustomertblUserid, " +
                      "t.id as table_id, t.name, t.status, t.description, " +
-                     "u.id as customer_id, u.fullName, u.phone, u.email, u.username, u.role, c.tblMemberCardid " +
+                     "u.id as customer_id, u.fullName, u.phone, u.email, u.username, u.role, " +
+                     "c.tblMemberCardid " +
                      "FROM tblOrder o " +
                      "INNER JOIN tblTable t ON o.tblTableid = t.id " +
-                     "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
-                     "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
+                     "LEFT JOIN tblUser u ON o.tblCustomertblUserid = u.id " +
+                     "LEFT JOIN tblCustomer c ON u.id = c.tblUserid " +
                      "WHERE o.id = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
@@ -167,7 +173,7 @@ public class OrderDAO extends DAO {
                 );
                 order.setTable(table);
                 
-                // Set customer nếu có
+                // Set customer (có thể null nếu không có khách hàng)
                 int customerId = rs.getInt("customer_id");
                 if (customerId > 0) {
                     Customer customer = new Customer();
@@ -177,12 +183,19 @@ public class OrderDAO extends DAO {
                     customer.setEmail(rs.getString("u.email"));
                     customer.setUsername(rs.getString("u.username"));
                     customer.setRole(rs.getString("u.role"));
+                    
+                    // Set membercard nếu có
+                    int memberCardId = rs.getInt("c.tblMemberCardid");
+                    if (memberCardId > 0) {
+                        Membercard membercard = new Membercard();
+                        membercard.setId(memberCardId);
+                        customer.setMembercard(membercard);
+                    }
+                    
                     order.setCustomer(customer);
-                }
-                
-                java.sql.Timestamp timestamp = rs.getTimestamp("o.created_at");
-                if (timestamp != null) {
-                    order.setCreated_at(timestamp.toLocalDateTime());
+                } else {
+                    // Nếu không có khách hàng, set null
+                    order.setCustomer(null);
                 }
                 
                 // Load order details

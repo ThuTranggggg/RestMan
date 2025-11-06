@@ -48,7 +48,7 @@
 
         .header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 24px 40px;
+            padding: 9px 30px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
             display: flex;
             justify-content: space-between;
@@ -81,29 +81,50 @@
 
         .content {
             flex: 1;
+            align-items: flex-start;
+            justify-content: flex-start;
             padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
             width: 100%;
         }
 
+        .search-menu {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .search-menu h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .search-menu > p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
         .search-section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 24px;
+            background: none;
+            padding: 10px;
             border-radius: 12px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
         }
 
         .search-form {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             align-items: center;
+            justify-content: center;
         }
 
         .search-form input[type="text"] {
-            flex: 1;
+            flex: 0 1 400px;
             min-width: 200px;
+            max-width: 500px;
             padding: 12px 14px;
             border: 1px solid rgba(16, 24, 40, 0.08);
             border-radius: 8px;
@@ -239,20 +260,21 @@
 <body>
 <div class="wrap">
     <div class="header">
-        <h1>Tìm kiếm bàn</h1>
+        <h1>RestMan</h1>
         <a href="<%= request.getContextPath() %>/staffPage" class="back-btn">← Quay lại</a>
     </div>
 
     <div class="content">
-        <div class="search-section">
-            <p style="margin-bottom: 16px; font-weight: 700;">Tìm kiếm bàn cần thanh toán</p>
-            <form action="<%= request.getContextPath() %>/searchTable" method="get" class="search-form">
-                <input type="text" name="keyword" placeholder="Nhập ID bàn, tên bàn hoặc tên khách hàng..."
-                       value="<%= keyword != null ? keyword : "" %>" />
-                <button type="submit">🔍 Tìm kiếm</button>
-            </form>
-            <div class="info-text">
-                💡 Các bàn hiển thị dưới đây đang được phục vụ. Nhấn vào bàn để xem hóa đơn tạm tính.
+        <div class="search-menu">
+            <h2>Tìm kiếm bàn</h2>
+            <p>Chọn bàn để xem và thanh toán hóa đơn</p>
+
+            <div class="search-section">
+                <form action="<%= request.getContextPath() %>/searchTable" method="get" class="search-form">
+                    <input type="text" name="keyword" placeholder="Nhập ID bàn, tên bàn hoặc tên khách hàng..."
+                           value="<%= keyword != null ? keyword : "" %>" />
+                    <button type="submit">Tìm kiếm</button>
+                </form>
             </div>
         </div>
 

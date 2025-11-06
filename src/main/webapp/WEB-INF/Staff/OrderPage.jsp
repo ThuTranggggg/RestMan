@@ -58,7 +58,7 @@
 
         .header {
             background: rgba(255, 255, 255, 0.95);
-            padding: 24px 40px;
+            padding: 9px 30px;
             box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
             display: flex;
             justify-content: space-between;
@@ -88,8 +88,8 @@
 
         .content {
             flex: 1;
-            padding: 40px;
-            max-width: 900px;
+            padding: 20px;
+            max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
@@ -97,44 +97,81 @@
         .invoice-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            padding: 30px;
+            padding: 16px;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+        }
+
+        .invoice-menu {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .invoice-menu h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .invoice-menu > p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+            text-align: center;
         }
 
         .invoice-header {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 2px solid rgba(15, 23, 42, 0.1);
         }
 
         .header-item h3 {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .header-item p {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: #0f172a;
         }
 
+        .membercard-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 6px;
+            display: inline-block;
+        }
+
+        .membercard-info p {
+            font-size: 12px;
+            color: #1e40af;
+            font-weight: 600;
+            margin: 0;
+        }
+
         .items-section h3 {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             color: #0f172a;
         }
 
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
+            font-size: 12px;
         }
 
         .items-table thead {
@@ -142,17 +179,29 @@
         }
 
         .items-table th {
-            padding: 12px;
+            padding: 8px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: #0f172a;
         }
 
+        .items-table th:nth-child(2),
+        .items-table th:nth-child(3),
+        .items-table th:nth-child(4) {
+            text-align: right;
+        }
+
         .items-table td {
-            padding: 12px;
+            padding: 8px;
             border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-            font-size: 14px;
+            font-size: 12px;
+        }
+
+        .items-table td:nth-child(2),
+        .items-table td:nth-child(3),
+        .items-table td:nth-child(4) {
+            text-align: right;
         }
 
         .items-table .item-name {
@@ -160,98 +209,70 @@
             color: #0f172a;
         }
 
-        .items-table .item-price {
-            text-align: right;
-        }
-
-        .items-table .quantity-input {
-            width: 60px;
-            padding: 6px;
-            border: 1px solid rgba(16, 24, 40, 0.08);
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .remove-btn {
-            padding: 6px 10px;
-            background: #fee;
-            border: 1px solid #fcc;
-            border-radius: 6px;
-            color: #c33;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 200ms ease;
-        }
-
-        .remove-btn:hover {
-            background: #fdd;
-            border-color: #fbb;
-        }
-
         .total-section {
             background: rgba(15, 23, 42, 0.05);
-            padding: 20px;
+            padding: 8px;
             border-radius: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 16px;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
 
         .total-row.final {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 800;
-            padding-top: 12px;
-            border-top: 2px solid rgba(15, 23, 42, 0.1);
+            padding-top: 8px;
             color: #0b8457;
         }
 
         .bonus-section {
             background: rgba(107, 114, 128, 0.05);
-            padding: 16px;
+            padding: 12px;
             border-radius: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 16px;
         }
 
         .bonus-form {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
+            font-size: 13px;
         }
 
         .bonus-form label {
             font-weight: 600;
             color: #0f172a;
+            white-space: nowrap;
         }
 
         .bonus-form input {
             flex: 1;
-            max-width: 150px;
-            padding: 10px 12px;
+            max-width: 120px;
+            padding: 8px 10px;
             border: 1px solid rgba(16, 24, 40, 0.08);
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .action-buttons {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: flex-end;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             font-weight: 700;
             cursor: pointer;
             transition: all 200ms ease;
-            font-size: 15px;
+            font-size: 13px;
         }
 
         .btn-checkout {
@@ -266,8 +287,9 @@
 
         .no-items {
             text-align: center;
-            padding: 40px 20px;
+            padding: 20px;
             color: #666;
+            font-size: 13px;
         }
 
         @media (max-width: 640px) {
@@ -277,7 +299,7 @@
             }
 
             .content {
-                padding: 20px;
+                padding: 12px;
             }
 
             .invoice-header {
@@ -285,12 +307,12 @@
             }
 
             .items-table {
-                font-size: 12px;
+                font-size: 11px;
             }
 
             .items-table th,
             .items-table td {
-                padding: 8px;
+                padding: 6px;
             }
 
             .action-buttons {
@@ -306,17 +328,22 @@
 <body>
 <div class="wrap">
     <div class="header">
-        <h1>Hóa đơn tạm tính</h1>
+        <h1>RestMan</h1>
         <a href="<%= request.getContextPath() %>/searchTable" class="back-btn">← Quay lại</a>
     </div>
 
     <div class="content">
+        <div class="invoice-menu">
+            <h2>Hóa đơn tạm tính</h2>
+            <p>Thông tin bàn và danh sách sản phẩm</p>
+        </div>
+
         <div class="invoice-card">
             <!-- Thông tin hóa đơn -->
             <div class="invoice-header">
                 <div class="header-item">
                     <h3>Bàn</h3>
-                    <p><%= table.getName() %> (#<%= table.getId() %>)</p>
+                    <p><%= table.getName() %> (ID: <%= table.getId() %>)</p>
                 </div>
                 <div class="header-item">
                     <h3>Khách hàng</h3>
@@ -324,8 +351,17 @@
                         <%
                             if (order.getCustomer() != null && order.getCustomer().getId() > 0) {
                                 out.print(order.getCustomer().getFullName());
+                                if (order.getCustomer().getMembercard() != null) {
+                        %>
+                    </p>
+                    <div class="membercard-info">
+                        <p>💳 THẺ THÀNH VIÊN: #<%= order.getCustomer().getMembercard().getId() %></p>
+                    </div>
+                    <p>
+                        <%
+                                }
                             } else {
-                                out.print("(Chưa chỉ định)");
+                                out.print("(Khách vãng lai)");
                             }
                         %>
                     </p>
@@ -352,7 +388,6 @@
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Thành tiền</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -362,17 +397,9 @@
                         %>
                         <tr>
                             <td class="item-name"><%= detail.getProduct().getName() %></td>
-                            <td class="item-price"><%= String.format("%,.0f", detail.getProduct().getPrice()) %> đ</td>
+                            <td><%= String.format("%,.0f", detail.getProduct().getPrice()) %> đ</td>
                             <td><%= detail.getQuantity() %></td>
-                            <td class="item-price"><%= String.format("%,.0f", itemTotal) %> đ</td>
-                            <td>
-                                <form action="<%= request.getContextPath() %>/order" method="post" style="display: inline;">
-                                    <input type="hidden" name="action" value="removeProduct" />
-                                    <input type="hidden" name="detailId" value="<%= detail.getId() %>" />
-                                    <input type="hidden" name="orderId" value="<%= order.getId() %>" />
-                                    <button type="submit" class="remove-btn">Xóa</button>
-                                </form>
-                            </td>
+                            <td><%= String.format("%,.0f", itemTotal) %> đ</td>
                         </tr>
                         <%
                             }
@@ -386,29 +413,41 @@
 
             <!-- Tổng tiền -->
             <div class="total-section">
-                <div class="total-row">
-                    <span>Tổng tiền:</span>
-                    <span><%= String.format("%,.0f", total) %> đ</span>
-                </div>
                 <div class="total-row final">
-                    <span>Thanh toán</span>
+                    <span>Tổng tiền:</span>
                     <span><%= String.format("%,.0f", total) %> đ</span>
                 </div>
             </div>
 
-            <!-- Điểm thưởng -->
+            <!-- Điểm thưởng (chỉ hiển thị nếu khách hàng có thẻ thành viên) -->
+            <%
+                if (order.getCustomer() != null && order.getCustomer().getId() > 0 && order.getCustomer().getMembercard() != null) {
+            %>
             <div class="bonus-section">
                 <form action="<%= request.getContextPath() %>/checkout" method="post" class="bonus-form" id="checkoutForm">
-                    <label for="bonusPoint">💎 Điểm thưởng cộng thêm:</label>
+                    <label for="bonusPoint">💎 Điểm thưởng:</label>
                     <input type="number" id="bonusPoint" name="bonusPoint" value="0" min="0" />
                     <input type="hidden" name="orderId" value="<%= order.getId() %>" />
                 </form>
             </div>
+            <%
+                } else {
+            %>
+            <div class="bonus-section" style="background: rgba(107, 114, 128, 0.1);">
+                <p style="font-size: 13px; color: #666; margin: 0;">ℹ️ Khách hàng không có thẻ thành viên, không thể cộng điểm thưởng</p>
+            </div>
+            <form action="<%= request.getContextPath() %>/checkout" method="post" id="checkoutForm" style="display: none;">
+                <input type="hidden" name="bonusPoint" value="0" />
+                <input type="hidden" name="orderId" value="<%= order.getId() %>" />
+            </form>
+            <%
+                }
+            %>
 
             <!-- Nút hành động -->
             <div class="action-buttons">
                 <button type="submit" form="checkoutForm" class="btn btn-checkout">
-                    ✓ Xác nhận thanh toán
+                    Xác nhận
                 </button>
             </div>
         </div>

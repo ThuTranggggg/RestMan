@@ -33,11 +33,11 @@ public class SearchTableServlet extends HttpServlet {
         
         try {
             if (keyword == null || keyword.trim().isEmpty()) {
-                // Lấy tất cả bàn đang được phục vụ (status = 1)
-                tables = tableDAO.getTablesByStatus(1);
+                // Lấy tất cả bàn đang có order chưa thanh toán
+                tables = tableDAO.getTablesWithPendingOrders();
             } else {
-                // Tìm kiếm bàn theo từ khóa
-                tables = tableDAO.searchTables(keyword.trim());
+                // Tìm kiếm bàn theo từ khóa (chỉ những bàn có order chưa thanh toán)
+                tables = tableDAO.searchTablesWithPendingOrders(keyword.trim());
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -55,97 +55,175 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 40px 20px;
+            padding: 0;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 9px 30px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .back-btn {
+            padding: 10px 16px;
+            background: #f3f4f6;
+            border: 1px solid rgba(16, 24, 40, 0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #0f172a;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .invoice-wrapper {
+            flex: 1;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .invoice-container {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(15, 23, 42, 0.12);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .invoice-header {
-            background: linear-gradient(90deg, #296265 0%, #112d59 100%);
-            color: white;
-            padding: 40px 30px;
+        .invoice-header-title {
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
             text-align: center;
         }
 
-        .invoice-header h1 {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .invoice-number {
-            font-size: 14px;
-            opacity: 0.9;
+        .invoice-header-title h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
         }
 
         .invoice-content {
-            padding: 30px;
+            padding: 11px 13px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 190px);
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid rgba(15, 23, 42, 0.1);
+            gap: 10px;
+            margin-bottom: 11px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
         }
 
         .info-item h4 {
-            font-size: 12px;
-            color: #666;
+            font-size: 11px;
+            color: #999;
             font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
         }
 
         .info-item p {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: #0f172a;
-            line-height: 1.6;
+            line-height: 1.3;
         }
 
         .items-section h3 {
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
+            margin-top: 9px;
             color: #0f172a;
         }
 
         .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 9px;
+            font-size: 13px;
+            table-layout: fixed;
         }
 
         .items-table thead {
-            background: rgba(15, 23, 42, 0.05);
+            background: rgba(15, 23, 42, 0.04);
         }
 
         .items-table th {
-            padding: 12px;
+            padding: 6px 6px;
             text-align: left;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: #0f172a;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+            word-wrap: break-word;
+        }
+
+        .items-table th:nth-child(1) {
+            width: 50%;
+        }
+
+        .items-table th:nth-child(2) {
+            width: 20%;
+            text-align: right;
+        }
+
+        .items-table th:nth-child(3) {
+            width: 15%;
+            text-align: center;
+        }
+
+        .items-table th:nth-child(4) {
+            width: 15%;
+            text-align: right;
         }
 
         .items-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-            font-size: 14px;
+            padding: 6px 6px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+            font-size: 13px;
+            word-wrap: break-word;
         }
 
         .items-table .item-name {
-            font-weight: 700;
+            font-weight: 600;
             color: #0f172a;
+        }
+
+        .items-table td:nth-child(2) {
+            text-align: right;
+        }
+
+        .items-table td:nth-child(3) {
+            text-align: center;
         }
 
         .items-table .item-price {
@@ -153,61 +231,111 @@
         }
 
         .summary-section {
-            background: rgba(15, 23, 42, 0.05);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            background: rgba(15, 23, 42, 0.04);
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-bottom: 9px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 4px;
+            font-size: 13px;
         }
 
         .summary-row.total {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 800;
-            padding-top: 10px;
-            border-top: 2px solid rgba(15, 23, 42, 0.1);
+            padding-top: 6px;
             color: #0b8457;
+            margin-bottom: 0;
         }
 
         .summary-row.bonus {
             color: #6b72e0;
             font-weight: 700;
+            font-size: 12px;
+        }
+
+        .membercard-section {
+            background: linear-gradient(135deg, rgba(107, 114, 224, 0.08) 0%, rgba(11, 132, 87, 0.08) 100%);
+            border: 1px solid rgba(107, 114, 224, 0.15);
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-bottom: 9px;
+        }
+
+        .membercard-header {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b72e0;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .membercard-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .membercard-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .membercard-row strong {
+            color: #0f172a;
+            font-weight: 700;
         }
 
         .staff-info {
-            text-align: center;
-            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
             background: rgba(15, 23, 42, 0.02);
-            border-top: 1px solid rgba(15, 23, 42, 0.1);
-            font-size: 13px;
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            font-size: 12px;
             color: #666;
+            line-height: 1.4;
         }
 
         .staff-info strong {
-            display: block;
             color: #0f172a;
             font-weight: 700;
-            margin-bottom: 4px;
+        }
+
+        .staff-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .staff-time {
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 12px;
+            font-size: 12px;
         }
 
         .action-buttons {
-            padding: 30px;
+            padding: 10px 14px;
             background: rgba(15, 23, 42, 0.02);
             display: flex;
-            gap: 12px;
+            gap: 8px;
             justify-content: center;
             flex-wrap: wrap;
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 9px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-weight: 700;
             cursor: pointer;
             transition: all 200ms ease;
@@ -215,7 +343,7 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-print {
@@ -224,31 +352,39 @@
         }
 
         .btn-print:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
-        }
-
-        .btn-back {
-            background: #f3f4f6;
-            color: #0f172a;
-            border: 1px solid rgba(16, 24, 40, 0.08);
-        }
-
-        .btn-back:hover {
-            background: #e5e7eb;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
         }
 
         @media print {
             body {
                 background: white;
+                min-height: auto;
             }
 
             .wrap {
                 padding: 0;
+                min-height: auto;
+            }
+
+            .header {
+                display: none;
+            }
+
+            .invoice-wrapper {
+                padding: 0;
+                justify-content: flex-start;
             }
 
             .invoice-container {
                 box-shadow: none;
+                border-radius: 0;
+                max-width: 100%;
+            }
+
+            .invoice-content {
+                max-height: none;
+                overflow: visible;
             }
 
             .action-buttons {
@@ -257,31 +393,74 @@
         }
 
         @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 8px 12px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .invoice-wrapper {
+                padding: 8px;
+            }
+
+            .invoice-container {
+                max-width: 100%;
+            }
+
+            .invoice-header-title h2 {
+                font-size: 18px;
+            }
+
             .invoice-content {
-                padding: 20px;
+                max-height: calc(100vh - 160px);
             }
 
             .info-grid {
                 grid-template-columns: 1fr;
+                gap: 8px;
             }
 
             .items-table {
-                font-size: 12px;
+                font-size: 11px;
             }
 
             .items-table th,
             .items-table td {
-                padding: 8px;
+                padding: 5px 5px;
+            }
+
+            .staff-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .staff-name {
+                width: 100%;
+            }
+
+            .staff-time {
+                margin-left: 0;
             }
 
             .action-buttons {
-                flex-direction: column;
-                padding: 20px;
+                padding: 8px 10px;
             }
 
             .btn {
-                width: 100%;
-                justify-content: center;
+                padding: 7px 14px;
+                font-size: 12px;
             }
         }
     </style>
@@ -293,43 +472,29 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="invoice-container">
-        <!-- Header -->
-        <div class="invoice-header">
-            <h1>HÓA ĐƠN</h1>
-            <div class="invoice-number">Số hiệu: <%= invoice.getId() %></div>
-        </div>
+    <div class="header">
+        <h1>RestMan</h1>
+        <a href="<%= request.getContextPath() %>/searchTable" class="back-btn">← Trở về</a>
+    </div>
 
-        <!-- Content -->
-        <div class="invoice-content">
-            <!-- Thông tin chi tiết -->
+    <div class="invoice-wrapper">
+        <div class="invoice-container">
+            <div class="invoice-header-title">
+                <h2>Hóa đơn</h2>
+            </div>
+
+            <div class="invoice-content">
             <div class="info-grid">
                 <div class="info-item">
-                    <h4>Thời gian</h4>
-                    <p><%= invoice.getDatetime().format(formatter) %></p>
-                </div>
-                <div class="info-item">
-                    <h4>Nhân viên</h4>
-                    <p>
-                        <%
-                            if (invoice.getStaff() != null && invoice.getStaff().getUser() != null) {
-                                out.print(invoice.getStaff().getUser().getFullName());
-                            } else {
-                                out.print("(Không có thông tin)");
-                            }
-                        %>
-                    </p>
-                </div>
-                <div class="info-item">
                     <h4>Bàn</h4>
-                    <p><%= invoice.getOrder().getTable().getName() %> (#<%= invoice.getOrder().getTable().getId() %>)</p>
+                    <p><%= invoice.getTable().getName() %> (#<%= invoice.getTable().getId() %>)</p>
                 </div>
                 <div class="info-item">
                     <h4>Khách hàng</h4>
                     <p>
                         <%
-                            if (invoice.getOrder().getCustomer() != null && invoice.getOrder().getCustomer().getId() > 0) {
-                                out.print(invoice.getOrder().getCustomer().getFullName());
+                            if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0) {
+                                out.print(invoice.getCustomer().getFullName());
                             } else {
                                 out.print("(Khách vãng lai)");
                             }
@@ -370,7 +535,7 @@
 
             <!-- Tóm tắt -->
             <div class="summary-section">
-                <div class="summary-row">
+                <div class="summary-row total">
                     <span>Tổng tiền:</span>
                     <span><%= String.format("%,.0f", total) %> đ</span>
                 </div>
@@ -384,27 +549,46 @@
                 <%
                     }
                 %>
-                <div class="summary-row total">
-                    <span>Thanh toán:</span>
-                    <span><%= String.format("%,.0f", total) %> đ</span>
+            </div>
+
+            <!-- Thẻ thành viên -->
+            <%
+                if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0 
+                    && invoice.getCustomer().getMembercard() != null) {
+            %>
+            <div class="membercard-section">
+                <div class="membercard-header">💳 Thẻ thành viên</div>
+                <div class="membercard-row">
+                    <span>ID thẻ:</span>
+                    <strong>#<%= invoice.getCustomer().getMembercard().getId() %></strong>
+                </div>
+                <div class="membercard-row">
+                    <span>Điểm hiện tại:</span>
+                    <strong><%= invoice.getCustomer().getMembercard().getPoint() %> điểm</strong>
                 </div>
             </div>
+            <%
+                }
+            %>
 
             <!-- Thông tin nhân viên -->
             <div class="staff-info">
-                <%
-                    if (invoice.getStaff() != null && invoice.getStaff().getUser() != null) {
-                %>
-                <strong><%= invoice.getStaff().getUser().getFullName() %></strong>
-                Nhân viên bán hàng - <%= invoice.getStaff().getPosition() %>
-                <%
-                    } else {
-                %>
-                <strong>Nhân viên</strong>
-                Chưa có thông tin
-                <%
-                    }
-                %>
+                <div class="staff-name">
+                    <%
+                        if (invoice.getServer() != null && invoice.getServer().getUser() != null) {
+                    %>
+                    Nhân viên: <strong><%= invoice.getServer().getUser().getFullName() %></strong>
+                    <%
+                        } else {
+                    %>
+                    <strong>Chưa có thông tin nhân viên</strong>
+                    <%
+                        }
+                    %>
+                </div>
+                <div class="staff-time">
+                    <%= invoice.getDatetime().format(formatter) %>
+                </div>
             </div>
         </div>
 
@@ -413,9 +597,8 @@
             <button onclick="printInvoice()" class="btn btn-print">
                 🖨️ In hóa đơn
             </button>
-            <a href="<%= request.getContextPath() %>/searchTable" class="btn btn-back">
-                ← Quay lại
-            </a>
+        </div>
+            </div>
         </div>
     </div>
 </div>

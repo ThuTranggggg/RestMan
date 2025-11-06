@@ -36,7 +36,7 @@ public class StaffPageServlet extends HttpServlet {
             if (session != null) {
                 session.invalidate();
             }
-            response.sendRedirect(request.getContextPath() + "/");
+            response.sendRedirect(request.getContextPath() + "/login?role=staff");
         } else {
             doGet(request, response);
         }

@@ -3,8 +3,10 @@ package servlet;
 import dao.InvoiceDAO;
 import dao.OrderDAO;
 import dao.TableDAO;
+import model.Invoice;
 import model.Order;
 import model.Staff;
+import model.Server;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 
 @WebServlet("/checkout")
 public class CheckoutServlet extends HttpServlet {
@@ -41,22 +44,40 @@ public class CheckoutServlet extends HttpServlet {
             int orderId = Integer.parseInt(orderIdStr);
             int bonusPoint = Integer.parseInt(bonusPointStr);
             
-            // Lấy thông tin nhân viên
+            // Step 1: Lấy Model từ Session
             Staff staff = (Staff) session.getAttribute("staff");
-            int staffId = staff.getUser().getId();
+            Server server = new Server(staff.getUser(), staff.getPosition());
             
-            // Tạo invoice từ order
+            // Step 2: Lấy Order từ DB
+            OrderDAO orderDAO = new OrderDAO();
+            Order order = orderDAO.getOrderById(orderId);
+            
+            if (order == null) {
+                request.setAttribute("error", "Đơn hàng không tồn tại");
+                request.getRequestDispatcher("/WEB-INF/Staff/OrderPage.jsp").forward(request, response);
+                return;
+            }
+            
+            // ✅ Tạo Invoice extends Order (kế thừa các thuộc tính từ Order)
+            Invoice invoice = new Invoice();
+            invoice.setId(order.getId());
+            invoice.setCustomer(order.getCustomer());
+            invoice.setTable(order.getTable());
+            invoice.setProducts(order.getProducts());
+            invoice.setServer(server);
+            invoice.setBonusPoint(bonusPoint);
+            invoice.setTotal(0); // Tính toán total từ products
+            invoice.setDatetime(LocalDateTime.now()); // Thời gian tạo hóa đơn là lúc nhân viên xác nhận
+            
+            // Step 3: Gọi DAO 
             InvoiceDAO invoiceDAO = new InvoiceDAO();
-            int invoiceId = invoiceDAO.createInvoice(orderId, staffId, bonusPoint);
+            int invoiceId = invoiceDAO.createInvoice(orderId, staff.getUser().getId(), bonusPoint);
             
             if (invoiceId > 0) {
+                // ✅ Không xóa Order - để lưu lịch sử
                 // Cập nhật trạng thái bàn về 0 (trống)
-                OrderDAO orderDAO = new OrderDAO();
-                Order order = orderDAO.getOrderById(orderId);
-                if (order != null) {
-                    TableDAO tableDAO = new TableDAO();
-                    tableDAO.updateTableStatus(order.getTable().getId(), 0);
-                }
+                TableDAO tableDAO = new TableDAO();
+                tableDAO.updateTableStatus(order.getTable().getId(), 0);
                 
                 // Redirect tới trang invoice
                 response.sendRedirect(request.getContextPath() + "/invoice?id=" + invoiceId);

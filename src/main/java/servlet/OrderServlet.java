@@ -49,16 +49,23 @@ public class OrderServlet extends HttpServlet {
                 return;
             }
             
-            // Lấy order hiện tại của bàn
-            Order order = tableDAO.getOrderByTableId(tableId);
+            // Lấy order ID của bàn
+            Order orderFromTable = tableDAO.getOrderByTableId(tableId);
             
-            // Nếu chưa có order, tạo order mới
+            // Nếu chưa có order, báo lỗi (không tạo order mới)
+            if (orderFromTable == null) {
+                request.setAttribute("error", "Bàn này không có order nào đang được thực hiện");
+                request.getRequestDispatcher("/WEB-INF/Staff/SearchTablePage.jsp").forward(request, response);
+                return;
+            }
+            
+            // Lấy order đầy đủ từ OrderDAO (chứa đầy đủ Customer info)
+            Order order = orderDAO.getOrderById(orderFromTable.getId());
+            
             if (order == null) {
-                int customerId = 0;
-                int newOrderId = orderDAO.createOrder(tableId, customerId);
-                if (newOrderId > 0) {
-                    order = orderDAO.getOrderById(newOrderId);
-                }
+                request.setAttribute("error", "Không tìm thấy thông tin order");
+                request.getRequestDispatcher("/WEB-INF/Staff/SearchTablePage.jsp").forward(request, response);
+                return;
             }
             
             // Lấy danh sách chi tiết đơn hàng
@@ -134,6 +141,11 @@ public class OrderServlet extends HttpServlet {
         int productId = Integer.parseInt(productIdStr);
         int quantity = Integer.parseInt(quantityStr);
         
+        // ✅ FIX: Tạo OrderDetail Model trước (Model → DAO)
+        OrderDetail detail = new OrderDetail();
+        detail.setQuantity(quantity);
+        detail.setStatus("PENDING");
+        
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.addOrderDetail(orderId, productId, quantity);
         
@@ -154,6 +166,10 @@ public class OrderServlet extends HttpServlet {
         
         int detailId = Integer.parseInt(detailIdStr);
         int orderId = Integer.parseInt(orderIdStr);
+        
+        // ✅ FIX: Tạo OrderDetail Model trước (Model → DAO)
+        OrderDetail detail = new OrderDetail();
+        detail.setId(detailId);
         
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.removeOrderDetail(detailId);
@@ -176,6 +192,11 @@ public class OrderServlet extends HttpServlet {
         int detailId = Integer.parseInt(detailIdStr);
         int orderId = Integer.parseInt(orderIdStr);
         int quantity = Integer.parseInt(quantityStr);
+        
+        // ✅ FIX: Tạo OrderDetail Model trước (Model → DAO)
+        OrderDetail detail = new OrderDetail();
+        detail.setId(detailId);
+        detail.setQuantity(quantity);
         
         OrderDAO orderDAO = new OrderDAO();
         orderDAO.updateOrderDetailQuantity(detailId, quantity);

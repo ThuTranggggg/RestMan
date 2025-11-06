@@ -1,24 +1,25 @@
 package model;
 
-public class Customer extends User{
-    private User user;
+public class Customer extends User {
+    // ✅ FIX: Loại bỏ private User user; (đã inherited từ User)
     private Membercard membercard;
 
     public Customer(){
+        super();
     }
 
-    public Customer(User user, Membercard membercard){
-        this.user = user;
+    public Customer(Membercard membercard){
         this.membercard = membercard;
     }
 
-    public User getUser() {
-        return user;
+    public Customer(int id, String fullName, String phone, String email, 
+                   String username, String password, String role, 
+                   Membercard membercard){
+        super(id, fullName, phone, email, username, password, role);
+        this.membercard = membercard;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // ✅ FIX: Loại bỏ getUser()/setUser() - dùng thẳng từ parent class User
 
     public Membercard getMembercard() {
         return membercard;
@@ -26,5 +27,17 @@ public class Customer extends User{
 
     public void setMembercard(Membercard membercard) {
         this.membercard = membercard;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + this.getId() +
+                ", fullName='" + this.getFullName() + '\'' +
+                ", phone='" + this.getPhone() + '\'' +
+                ", email='" + this.getEmail() + '\'' +
+                ", username='" + this.getUsername() + '\'' +
+                ", membercard=" + membercard +
+                '}';
     }
 }

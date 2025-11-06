@@ -2,13 +2,18 @@ package dao;
 
 import model.Invoice;
 import model.Order;
-import model.Staff;
+import model.OrderDetail;
+import model.Product;
+import model.Server;
 import model.User;
+import model.Customer;
+import model.Table;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.time.LocalDateTime;
 
 public class InvoiceDAO extends DAO {
@@ -60,9 +65,14 @@ public class InvoiceDAO extends DAO {
      */
     public Invoice getInvoiceById(int invoiceId) throws SQLException {
         String sql = "SELECT i.id, i.tblOrderid, i.tblServertblStafftblUserid, i.bonusPoint, i.datetime, " +
-                     "u.id as staff_id, u.fullName as staff_name, u.phone, u.email, u.username, u.password, u.role " +
+                     "u.id as staff_id, u.fullName as staff_name, u.phone, u.email, u.username, u.password, u.role, " +
+                     "s.position, " +
+                     "o.tblCustomertblUserid, o.tblTableid " +
                      "FROM tblInvoice i " +
-                     "LEFT JOIN tblUser u ON i.tblServertblStafftblUserid = u.id " +
+                     "LEFT JOIN tblServer sv ON i.tblServertblStafftblUserid = sv.tblStafftblUserId " +
+                     "LEFT JOIN tblStaff s ON sv.tblStafftblUserId = s.tblUserId " +
+                     "LEFT JOIN tblUser u ON s.tblUserId = u.id " +
+                     "INNER JOIN tblOrder o ON i.tblOrderid = o.id " +
                      "WHERE i.id = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
@@ -70,7 +80,7 @@ public class InvoiceDAO extends DAO {
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
-                Staff staff = null;
+                Server server = null;
                 int staffId = rs.getInt("staff_id");
                 if (staffId > 0) {
                     User staffUser = new User(
@@ -82,28 +92,61 @@ public class InvoiceDAO extends DAO {
                         rs.getString("u.password"),
                         rs.getString("u.role")
                     );
-                    staff = new Staff(staffUser, "");
+                    server = new Server(staffUser, rs.getString("position"));
                 }
                 
-                // Load order
-                Order order = null;
-                OrderDAO orderDAO = new OrderDAO();
-                try {
-                    order = orderDAO.getOrderById(rs.getInt("i.tblOrderid"));
-                } catch (SQLException e) {
-                    // Order không tìm thấy
+                // Load Order info
+                Customer customer = null;
+                Table table = null;
+                int customerId = rs.getInt("o.tblCustomertblUserid");
+                int tableId = rs.getInt("o.tblTableid");
+                
+                if (customerId > 0) {
+                    // Load customer (có thể để null nếu không có customer)
+                    customer = null; // TODO: Load from database if needed
+                }
+                
+                if (tableId > 0) {
+                    // Load table
+                    TableDAO tableDAO = new TableDAO();
+                    table = tableDAO.getTableById(tableId);
                 }
                 
                 Timestamp timestamp = rs.getTimestamp("i.datetime");
                 LocalDateTime datetime = timestamp != null ? timestamp.toLocalDateTime() : LocalDateTime.now();
                 
+                int orderId = rs.getInt("tblOrderid");
+                int invoiceIdValue = rs.getInt("i.id");
+                
+                // Invoice kế thừa Order (mà không có created_at)
                 Invoice invoice = new Invoice(
-                    invoiceId,
-                    datetime,
+                    orderId,  // Set Order ID
+                    table,
+                    customer,
+                    0, // total - sẽ tính từ OrderDetail
+                    server,
                     rs.getInt("bonusPoint"),
-                    order,
-                    staff
+                    datetime
                 );
+                invoice.setInvoiceId(invoiceIdValue);  // Set Invoice ID riêng
+                
+                // Load OrderDetails
+                OrderDAO orderDAO = new OrderDAO();
+                Order order = orderDAO.getOrderById(orderId);
+                if (order != null) {
+                    invoice.setTable(order.getTable());
+                    invoice.setCustomer(order.getCustomer());
+                    // Load OrderDetails để convert thành Products
+                    List<OrderDetail> orderDetails = orderDAO.getOrderDetails(orderId);
+                    // Chuyển OrderDetails thành Products list
+                    java.util.List<Product> products = new java.util.ArrayList<>();
+                    if (orderDetails != null) {
+                        for (OrderDetail detail : orderDetails) {
+                            products.add(detail.getProduct());
+                        }
+                    }
+                    invoice.setProducts(products);
+                }
                 
                 return invoice;
             }

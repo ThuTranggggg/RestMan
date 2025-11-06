@@ -81,7 +81,7 @@
 	</form>
 
 	<!-- Truy cập dưới vai trò Nhân viên -->
-	<form action="<%= request.getContextPath() %>/login" method="get" style="display:inline-block;">
+	<form action="<%= request.getContextPath() %>/login" method="get" target="_blank" style="display:inline-block;">
 		<input type="hidden" name="role" value="staff" />
 		<button type="submit" class="btn secondary">Tôi là Nhân viên</button>
 	</form>
