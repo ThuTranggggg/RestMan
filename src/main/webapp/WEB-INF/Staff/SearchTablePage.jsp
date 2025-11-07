@@ -17,6 +17,11 @@
         tables = new java.util.ArrayList<>();
     }
     
+    // Lưu từ khóa tìm kiếm và trang hiện tại vào session
+    if (keyword != null && !keyword.isEmpty()) {
+        session.setAttribute("searchTableKeyword", keyword);
+    }
+    
     // Phân trang: 2 hàng bàn x 5 cột = 10 bàn/trang
     int tablesPerPage = 10;
     int currentPage = 1;
@@ -29,6 +34,9 @@
             currentPage = 1;
         }
     }
+    
+    // Lưu trang hiện tại vào session
+    session.setAttribute("searchTableCurrentPage", currentPage);
     
     int totalPages = (int) Math.ceil((double) tables.size() / tablesPerPage);
     if (currentPage > totalPages && totalPages > 0) {

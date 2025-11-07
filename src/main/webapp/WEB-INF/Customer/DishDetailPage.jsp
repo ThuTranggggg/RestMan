@@ -8,6 +8,15 @@
                 .replace("\"", "&quot;");
     }
 %>
+<%
+    // Tạo URL quay lại thông minh
+    String backUrl = request.getContextPath() + "/searchDish";
+    String searchKeyword = (String) session.getAttribute("searchDishKeyword");
+    
+    if (searchKeyword != null && !searchKeyword.isEmpty()) {
+        backUrl += "?keyword=" + java.net.URLEncoder.encode(searchKeyword, "UTF-8");
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -154,7 +163,7 @@
 <body>
 <div class="header">
     <h1>RestMan</h1>
-    <a href="javascript:history.back();" class="back-btn">Trở về</a>
+    <a href="<%= backUrl %>" class="back-btn">Trở về</a>
 </div>
 
 <div class="container">

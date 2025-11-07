@@ -27,6 +27,20 @@
     if (total == null) {
         total = 0.0;
     }
+    
+    // Tạo URL quay lại thông minh
+    String backUrl = request.getContextPath() + "/searchTable";
+    String searchKeyword = (String) session.getAttribute("searchTableKeyword");
+    Integer currentPage = (Integer) session.getAttribute("searchTableCurrentPage");
+    
+    if (searchKeyword != null && !searchKeyword.isEmpty()) {
+        backUrl += "?keyword=" + java.net.URLEncoder.encode(searchKeyword, "UTF-8");
+        if (currentPage != null && currentPage > 1) {
+            backUrl += "&page=" + currentPage;
+        }
+    } else if (currentPage != null && currentPage > 1) {
+        backUrl += "?page=" + currentPage;
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -360,7 +374,7 @@
 <div class="wrap">
     <div class="header">
         <h1>RestMan</h1>
-        <a href="<%= request.getContextPath() %>/searchTable" class="back-btn">Quay lại</a>
+        <a href="<%= backUrl %>" class="back-btn">Quay lại</a>
     </div>
 
     <div class="content">

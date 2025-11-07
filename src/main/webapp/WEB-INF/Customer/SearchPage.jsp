@@ -7,6 +7,12 @@
     if (products == null) {
         products = new java.util.ArrayList();
     }
+    
+    // Lưu từ khóa tìm kiếm vào session
+    String keyword = (String) request.getAttribute("keyword");
+    if (keyword != null && !keyword.isEmpty()) {
+        session.setAttribute("searchDishKeyword", keyword);
+    }
 %>
 
 <%-- Small HTML-escape helper to avoid external dependencies --%>
