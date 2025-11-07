@@ -76,8 +76,9 @@ public class TableDAO extends DAO {
                   "FROM tblTable t " +
                   "LEFT JOIN tblOrder o ON t.id = o.tblTableid " +
                   "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
+                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
                   "WHERE t.status = 1 AND " +
-                  "(CAST(t.id AS CHAR) LIKE ? OR t.name LIKE ? OR c.fullName LIKE ?) " +
+                  "(CAST(t.id AS CHAR) LIKE ? OR t.name LIKE ? OR u.fullName LIKE ?) " +
                   "ORDER BY t.id";
         } else {
             // Tìm theo tên bàn hoặc tên khách hàng
@@ -85,8 +86,9 @@ public class TableDAO extends DAO {
                   "FROM tblTable t " +
                   "LEFT JOIN tblOrder o ON t.id = o.tblTableid " +
                   "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
+                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
                   "WHERE t.status = 1 AND " +
-                  "(t.name LIKE ? OR c.fullName LIKE ?) " +
+                  "(t.name LIKE ? OR u.fullName LIKE ?) " +
                   "ORDER BY t.id";
         }
         
@@ -216,7 +218,8 @@ public class TableDAO extends DAO {
                   "FROM tblTable t " +
                   "INNER JOIN tblOrder o ON t.id = o.tblTableid " +
                   "LEFT JOIN tblInvoice i ON o.id = i.tblOrderid " +
-                  "LEFT JOIN tblUser u ON o.tblUserid = u.id " +
+                  "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
+                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
                   "WHERE i.id IS NULL AND (CAST(t.id AS CHAR) LIKE ? OR t.name LIKE ? OR u.fullName LIKE ?) " +
                   "ORDER BY t.id";
         } else {
@@ -225,7 +228,8 @@ public class TableDAO extends DAO {
                   "FROM tblTable t " +
                   "INNER JOIN tblOrder o ON t.id = o.tblTableid " +
                   "LEFT JOIN tblInvoice i ON o.id = i.tblOrderid " +
-                  "LEFT JOIN tblUser u ON o.tblUserid = u.id " +
+                  "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
+                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
                   "WHERE i.id IS NULL AND (t.name LIKE ? OR u.fullName LIKE ?) " +
                   "ORDER BY t.id";
         }

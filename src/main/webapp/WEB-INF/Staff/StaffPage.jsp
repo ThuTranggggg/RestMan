@@ -6,6 +6,8 @@
         response.sendRedirect(request.getContextPath() + "/");
         return;
     }
+    
+    String error = (String) request.getAttribute("error");
 %>
 <!DOCTYPE html>
 <html>
@@ -34,27 +36,37 @@
             display: flex;
             flex-direction: column;
             padding: 0;
+            position: relative;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 9px 30px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 30px;
+            pointer-events: none;
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 800;
             color: #0f172a;
+            pointer-events: auto;
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 20px;
+            pointer-events: auto;
         }
 
         .user-name {
@@ -71,12 +83,13 @@
 
         .logout-btn {
             padding: 8px 16px;
-            background: #f3f4f6;
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(16, 24, 40, 0.08);
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 200ms ease;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
         }
 
         .logout-btn:hover {
@@ -90,6 +103,7 @@
             align-items: center;
             justify-content: center;
             padding: 60px 40px;
+            min-height: 100vh;
         }
 
         .staff-menu {
@@ -112,12 +126,12 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
-            max-width: 600px;
+            max-width: 250px;
             margin: 0 auto;
         }
 
         .menu-btn {
-            padding: 20px 16px;
+            padding: 14px 12px;
             background: rgba(255, 255, 255, 0.9);
             border: 2px solid rgba(15, 23, 42, 0.1);
             border-radius: 12px;
@@ -154,13 +168,23 @@
             background: linear-gradient(90deg, #1f4a4d 0%, #0a1e44 100%);
         }
 
+        .error-message {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .error-message::before {
+            content: "⚠️ ";
+            margin-right: 8px;
+        }
+
         @media (max-width: 640px) {
-            .header {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-                padding: 16px 20px;
-            }
 
             .user-info {
                 width: 100%;
@@ -197,6 +221,16 @@
         <div class="staff-menu">
             <h2>Trang chủ nhân viên</h2>
             <p>Hãy thanh toán hóa đơn cho khách ở đây nhé!</p>
+
+            <%
+                if (error != null) {
+            %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+            <%
+                }
+            %>
 
             <div class="menu-buttons">
                 <a href="<%= request.getContextPath() %>/searchTable" class="menu-btn primary">

@@ -22,8 +22,9 @@ public class SearchDishServerlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         String keyword = req.getParameter("keyword");
+        ProductDAO dao = null;
         try {
-            ProductDAO dao = new ProductDAO();
+            dao = new ProductDAO();
             String contextPath = req.getContextPath();
             
             List<Product> results;
@@ -37,15 +38,27 @@ public class SearchDishServerlet extends HttpServlet {
                 req.setAttribute("keyword", "");
             }
             
-            dao.closeQuietly();
+            if (results == null) {
+                results = new java.util.ArrayList<>();
+            }
 
             req.setAttribute("dishes", results);
             // forward to search page
             req.getRequestDispatcher("/WEB-INF/Customer/SearchPage.jsp").forward(req, resp);
         } catch (SQLException e) {
+            e.printStackTrace();
             req.setAttribute("error", "Lỗi khi tìm kiếm: " + e.getMessage());
             req.setAttribute("keyword", keyword == null ? "" : keyword);
-            req.getRequestDispatcher("/WEB-INF/Customer/SearchPage.jsp").forward(req, resp);
+            req.setAttribute("dishes", new java.util.ArrayList<>());
+            try {
+                req.getRequestDispatcher("/WEB-INF/Customer/SearchPage.jsp").forward(req, resp);
+            } catch (ServletException | IOException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            if (dao != null) {
+                dao.closeQuietly();
+            }
         }
     }
 

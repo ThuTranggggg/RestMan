@@ -54,32 +54,43 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 9px 30px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 30px;
+            pointer-events: none;
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 800;
             color: #0f172a;
+            pointer-events: auto;
         }
 
         .back-btn {
             padding: 10px 16px;
-            background: #f3f4f6;
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(16, 24, 40, 0.08);
             border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             font-weight: 600;
             transition: all 200ms ease;
+            pointer-events: auto;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
         }
 
         .back-btn:hover {
@@ -89,16 +100,22 @@
         .content {
             flex: 1;
             padding: 20px;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
         }
 
         .invoice-card {
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 16px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
+            max-height: calc(100vh - 24px);
+            overflow: visible;
         }
 
         .invoice-menu {
@@ -186,9 +203,15 @@
             color: #0f172a;
         }
 
+        .items-table th:first-child {
+            width: 30px;
+            text-align: center;
+        }
+
         .items-table th:nth-child(2),
         .items-table th:nth-child(3),
-        .items-table th:nth-child(4) {
+        .items-table th:nth-child(4),
+        .items-table th:nth-child(5) {
             text-align: right;
         }
 
@@ -198,9 +221,17 @@
             font-size: 12px;
         }
 
+        .items-table td:first-child {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #999;
+        }
+
         .items-table td:nth-child(2),
         .items-table td:nth-child(3),
-        .items-table td:nth-child(4) {
+        .items-table td:nth-child(4),
+        .items-table td:nth-child(5) {
             text-align: right;
         }
 
@@ -329,7 +360,7 @@
 <div class="wrap">
     <div class="header">
         <h1>RestMan</h1>
-        <a href="<%= request.getContextPath() %>/searchTable" class="back-btn">← Quay lại</a>
+        <a href="<%= request.getContextPath() %>/searchTable" class="back-btn">Quay lại</a>
     </div>
 
     <div class="content">
@@ -384,6 +415,7 @@
                 <table class="items-table">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>Sản phẩm</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
@@ -396,6 +428,7 @@
                                 double itemTotal = detail.getQuantity() * detail.getProduct().getPrice();
                         %>
                         <tr>
+                            <td><%= orderDetails.indexOf(detail) + 1 %></td>
                             <td class="item-name"><%= detail.getProduct().getName() %></td>
                             <td><%= String.format("%,.0f", detail.getProduct().getPrice()) %> đ</td>
                             <td><%= detail.getQuantity() %></td>

@@ -22,6 +22,13 @@ public class StaffPageServlet extends HttpServlet {
             return;
         }
         
+        // Lấy thông báo lỗi từ session nếu có
+        String error = (String) session.getAttribute("error");
+        if (error != null) {
+            request.setAttribute("error", error);
+            session.removeAttribute("error");  // Xóa thông báo sau khi lấy
+        }
+        
         // Forward tới StaffPage.jsp
         request.getRequestDispatcher("/WEB-INF/Staff/StaffPage.jsp").forward(request, response);
     }

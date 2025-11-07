@@ -1,27 +1,20 @@
 package model;
 
-public class Manager {
-    private Staff staff;  // FK tới Staff
+public class Manager extends Staff {
 
     public Manager() {
+        super();
     }
 
-    public Manager(Staff staff) {
-        this.staff = staff;
-    }
-
-    public Staff getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Staff staff) {
-        this.staff = staff;
+    public Manager(User user, String position) {
+        super(user, position);
     }
 
     @Override
     public String toString() {
         return "Manager{" +
-                "staff=" + staff +
+                "user=" + this.getUser() +
+                ", position='" + this.getPosition() + '\'' +
                 '}';
     }
 }

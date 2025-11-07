@@ -2,6 +2,9 @@ package dao;
 
 import model.Staff;
 import model.User;
+import model.Server;
+import model.Manager;
+import model.StockClerk;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +36,20 @@ public class StaffDAO extends DAO {
                     rs.getString("u.role")
                 );
                 
-                Staff staff = new Staff(user, rs.getString("position"));
+                String position = rs.getString("position");
+                Staff staff;
+                
+                // Tạo đúng kiểu Staff dựa vào position
+                if ("Server".equals(position)) {
+                    staff = new Server(user, position);
+                } else if ("Manager".equals(position)) {
+                    staff = new Manager(user, position);
+                } else if ("StockClerk".equals(position)) {
+                    staff = new StockClerk(user, position);
+                } else {
+                    staff = new Staff(user, position);
+                }
+                
                 return staff;
             }
         }
@@ -64,7 +80,20 @@ public class StaffDAO extends DAO {
                     rs.getString("u.role")
                 );
                 
-                Staff staff = new Staff(user, rs.getString("position"));
+                String position = rs.getString("position");
+                Staff staff;
+                
+                // Tạo đúng kiểu Staff dựa vào position
+                if ("Server".equals(position)) {
+                    staff = new Server(user, position);
+                } else if ("Manager".equals(position)) {
+                    staff = new Manager(user, position);
+                } else if ("StockClerk".equals(position)) {
+                    staff = new StockClerk(user, position);
+                } else {
+                    staff = new Staff(user, position);
+                }
+                
                 return staff;
             }
         }

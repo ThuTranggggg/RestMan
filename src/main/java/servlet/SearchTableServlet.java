@@ -2,6 +2,8 @@ package servlet;
 
 import dao.TableDAO;
 import model.Table;
+import model.Staff;
+import model.Server;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +26,14 @@ public class SearchTableServlet extends HttpServlet {
         // Kiểm tra nếu nhân viên đã đăng nhập
         if (session == null || session.getAttribute("staff") == null) {
             response.sendRedirect(request.getContextPath() + "/");
+            return;
+        }
+        
+        // Kiểm tra xem nhân viên có phải Server không
+        Staff staff = (Staff) session.getAttribute("staff");
+        if (!(staff instanceof Server)) {
+            session.setAttribute("error", "Chỉ nhân viên phục vụ mới có thể thực hiện chức năng thanh toán!");
+            response.sendRedirect(request.getContextPath() + "/staffPage");
             return;
         }
         

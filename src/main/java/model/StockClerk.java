@@ -1,27 +1,20 @@
 package model;
 
-public class StockClerk {
-    private Staff staff;  // FK tới Staff
+public class StockClerk extends Staff {
 
     public StockClerk() {
+        super();
     }
 
-    public StockClerk(Staff staff) {
-        this.staff = staff;
-    }
-
-    public Staff getStaff() {
-        return staff;
-    }
-
-    public void setStaff(Staff staff) {
-        this.staff = staff;
+    public StockClerk(User user, String position) {
+        super(user, position);
     }
 
     @Override
     public String toString() {
         return "StockClerk{" +
-                "staff=" + staff +
+                "user=" + this.getUser() +
+                ", position='" + this.getPosition() + '\'' +
                 '}';
     }
 }

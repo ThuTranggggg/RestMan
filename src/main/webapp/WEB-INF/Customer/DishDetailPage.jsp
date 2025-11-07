@@ -8,8 +8,6 @@
                 .replace("\"", "&quot;");
     }
 %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,21 +15,80 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Chi tiết sản phẩm - RestMan</title>
     <style>
+     * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+     }
+
      /* Page background only (gradient) */
      html, body { height: 100%; }
-     body{ margin:0; font-family: "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+     body{ 
+         font-family: "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
          background: linear-gradient(180deg, #f4cada 0%, #cef4f6 100%);
-         color:#0f172a; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+         color:#0f172a; 
+         -webkit-font-smoothing:antialiased; 
+         -moz-osx-font-smoothing:grayscale;
          /* prevent page from scrolling; content will scroll inside the card */
-         overflow: hidden; }
+         overflow: hidden; 
+     }
+
+     /* Header styling */
+     .header {
+         background: transparent;
+         padding: 0;
+         box-shadow: none;
+         display: flex;
+         justify-content: space-between;
+         align-items: flex-start;
+         position: fixed;
+         top: 0;
+         left: 0;
+         right: 0;
+         z-index: 100;
+         padding: 12px 30px;
+         pointer-events: none;
+     }
+
+     .header h1 {
+         font-size: 28px;
+         font-weight: 800;
+         color: #0f172a;
+         pointer-events: auto;
+     }
+
+     .back-btn {
+         padding: 10px 16px;
+         background: rgba(255, 255, 255, 0.95);
+         border: 1px solid rgba(16, 24, 40, 0.08);
+         border-radius: 8px;
+         cursor: pointer;
+         text-decoration: none;
+         font-weight: 600;
+         transition: all 200ms ease;
+         pointer-events: auto;
+         box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+         color: #0f172a;
+     }
+
+     .back-btn:hover {
+         background: #e5e7eb;
+     }
+
+     .header-right {
+         display: flex;
+         align-items: center;
+         gap: 20px;
+         pointer-events: auto;
+     }
 
     /* Container spacing — card is visual removed (transparent) but used for layout */
-    .container{ max-width:900px; margin:0 auto; padding:20px; height:100%; box-sizing:border-box; }
+    .container{ max-width:900px; margin:0 auto; padding:20px; height:100%; box-sizing:border-box; margin-top: 60px; }
     /* Make the card area scroll internally instead of letting the whole page scroll */
-    .card{ background:transparent; border-radius:0; padding:0; box-shadow:none; position:relative; min-height:0; padding-top:140px; overflow:auto; max-height: calc(100vh - 80px); }
+    .card{ background:transparent; border-radius:0; padding:0; box-shadow:none; position:relative; min-height:0; padding-top:20px; overflow:auto; max-height: calc(100vh - 140px); }
 
-        /* Page title fixed at top center */
-        .title{ position:fixed; top:36px; left:50%; transform:translateX(-50%); margin:0; font-size:30px; font-weight:800; color:#0f172a }
+        /* Page title */
+        .title{ margin:0 0 20px 0; font-size:30px; font-weight:800; color:#0f172a; text-align: center; }
 
     /* Detail rows layout: two-column with media on the right */
     .details{ width:100%; max-width:980px; margin:0 auto; padding:18px 20px; box-sizing:border-box; display:flex; gap:24px; align-items:flex-start }
@@ -95,55 +152,59 @@
     </script>
 </head>
 <body>
+<div class="header">
+    <h1>RestMan</h1>
+    <a href="javascript:history.back();" class="back-btn">Trở về</a>
+</div>
+
 <div class="container">
     <div class="card">
         <h1 class="title">Chi tiết sản phẩm</h1>
         
+        <%
+            model.Product dish = (model.Product) request.getAttribute("dish");
+            String dishImageUrl = (String) request.getAttribute("dishImageUrl");
+            String formattedPrice = (String) request.getAttribute("formattedPrice");
+            String detailError = (String) request.getAttribute("detailError");
+        %>
 
-        <c:choose>
-            <c:when test="${dish == null}">
-                <div style="color:darkred;padding:12px">
-                    <c:choose>
-                        <c:when test="${not empty detailError}">
-                            <c:out value="${detailError}"/>
-                        </c:when>
-                        <c:otherwise>
-                            Không tìm thấy thông tin sản phẩm.
-                        </c:otherwise>
-                    </c:choose>
+        <% if (dish == null) { %>
+            <div style="color:darkred;padding:12px">
+                <% if (detailError != null && !detailError.isEmpty()) { %>
+                    <%= esc(detailError) %>
+                <% } else { %>
+                    Không tìm thấy thông tin sản phẩm.
+                <% } %>
+            </div>
+            <div style="padding:12px"><a href="javascript:history.back();">Quay lại</a></div>
+        <% } else { %>
+            <div class="details">
+                <div class="content">
+                    <%
+                        String type = dish.getType();
+                        String typeClass = "dish";
+                        String typeLabel = "Món lẻ";
+                        if ("DRINK".equals(type)) {
+                            typeClass = "drink";
+                            typeLabel = "Nước";
+                        } else if ("COMBO".equals(type)) {
+                            typeClass = "combo";
+                            typeLabel = "Combo";
+                        }
+                    %>
+                    <span class="product-type <%= typeClass %>"><%= typeLabel %></span>
+                    <div class="row"><div class="label">Tên sản phẩm</div><div class="value"><%= esc(dish.getName()) %></div></div>
+                    <div class="row"><div class="label">Mô tả</div><div class="value"><%= esc(dish.getDescription()) %></div></div>
+                    <div class="row"><div class="label">Giá</div><div class="value"><span class="price"><%= esc(formattedPrice) %> VNĐ</span></div></div>
                 </div>
-                <div style="padding:12px"><a href="javascript:history.back();">Quay lại</a></div>
-            </c:when>
-            <c:otherwise>
-                <div class="details">
-                    <div class="content">
-                        <c:choose>
-                            <c:when test="${dish.type == 'DRINK'}">
-                                <span class="product-type drink">Nước</span>
-                            </c:when>
-                            <c:when test="${dish.type == 'COMBO'}">
-                                <span class="product-type combo">Combo</span>
-                            </c:when>
-                            <c:otherwise>
-                                <span class="product-type dish">Món lẻ</span>
-                            </c:otherwise>
-                        </c:choose>
-                        <div class="row"><div class="label">Tên sản phẩm</div><div class="value"><c:out value="${dish.name}"/></div></div>
-                        <div class="row"><div class="label">Mô tả</div><div class="value"><c:out value="${dish.description}"/></div></div>
-                        <div class="row"><div class="label">Giá</div><div class="value"><span class="price"><c:out value="${formattedPrice}"/> VNĐ</span></div></div>
+                <% if (dishImageUrl != null && !dishImageUrl.isEmpty()) { %>
+                    <div class="media <%= "DRINK".equals(type) ? "drink-media" : "" %>">
+                        <img src="<%= esc(dishImageUrl) %>" alt="<%= esc(dish.getName()) %>" style="max-height:420px;" 
+                             onerror="this.src='<%= request.getContextPath() %>/img/defaultImage.png'; this.style.border='2px solid #ccc';" />
                     </div>
-                    <c:if test="${not empty dishImageUrl}">
-                        <div class="media <c:if test="${dish.type == 'DRINK'}">drink-media</c:if>">
-                            <img src="${dishImageUrl}" alt="${dish.name}" style="max-height:420px;" 
-                                 onerror="this.src='${pageContext.request.contextPath}/img/defaultImage.png'; this.style.border='2px solid #ccc';" />
-                        </div>
-                    </c:if>
-                </div>
-                <div>
-                    <a class="back btn--ghost" href="javascript:goBack();" style="text-decoration:none;display:inline-flex;align-items:center;padding:10px 12px;border-radius:8px">Trở về</a>
-                </div>
-            </c:otherwise>
-        </c:choose>
+                <% } %>
+            </div>
+        <% } %>
     </div>
 </div>
 </body>

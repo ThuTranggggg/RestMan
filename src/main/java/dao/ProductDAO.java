@@ -48,7 +48,6 @@ public class ProductDAO extends DAO {
         String name = rs.getString("name");
         String description = rs.getString("description");
         float price = rs.getFloat("price");
-        int sold = rs.getInt("sold");
         String type = rs.getString("type");
         String imageUrl = rs.getString("imageUrl");
 
@@ -56,7 +55,7 @@ public class ProductDAO extends DAO {
         String resolvedImageUrl = resolveImageUrl(imageUrl, contextPath);
 
         // Tạo Product duy nhất với type
-        Product product = new Product(name, description, price, sold, type);
+        Product product = new Product(name, description, price, type);
         product.setId(id);
         product.setImageUrl(resolvedImageUrl);
 
@@ -84,7 +83,7 @@ public class ProductDAO extends DAO {
      */
     public List<Product> searchByKeyword(String keyword, String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE status = 1 AND (name LIKE ? OR description LIKE ?)
             ORDER BY 
@@ -123,7 +122,7 @@ public class ProductDAO extends DAO {
      */
     public List<Product> getAllProducts(String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE status = 1
             ORDER BY 
@@ -168,7 +167,7 @@ public class ProductDAO extends DAO {
      */
     public Product getProductDetail(int id, String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE id = ? AND status = 1
             LIMIT 1
@@ -194,7 +193,7 @@ public class ProductDAO extends DAO {
      */
     public List<Product> getAllDrinks(String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE type = 'DRINK' AND status = 1
             ORDER BY price ASC, name ASC
@@ -220,7 +219,7 @@ public class ProductDAO extends DAO {
      */
     public List<Product> getAllDishes(String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE type = 'DISH' AND status = 1
             ORDER BY price ASC, name ASC
@@ -246,7 +245,7 @@ public class ProductDAO extends DAO {
      */
     public List<Product> getAllCombos(String contextPath) throws SQLException {
         String sql = """
-            SELECT id, name, description, price, sold, type, imageUrl
+            SELECT id, name, description, price, type, imageUrl
             FROM tblProduct
             WHERE type = 'COMBO' AND status = 1
             ORDER BY price ASC, name ASC

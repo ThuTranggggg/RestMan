@@ -149,11 +149,12 @@ public class OrderDAO extends DAO {
         String sql = "SELECT o.id, o.tblTableid, o.tblCustomertblUserid, " +
                      "t.id as table_id, t.name, t.status, t.description, " +
                      "u.id as customer_id, u.fullName, u.phone, u.email, u.username, u.role, " +
-                     "c.tblMemberCardid " +
+                     "c.tblMemberCardid, m.point " +
                      "FROM tblOrder o " +
                      "INNER JOIN tblTable t ON o.tblTableid = t.id " +
                      "LEFT JOIN tblUser u ON o.tblCustomertblUserid = u.id " +
                      "LEFT JOIN tblCustomer c ON u.id = c.tblUserid " +
+                     "LEFT JOIN tblMemberCard m ON c.tblMemberCardid = m.id " +
                      "WHERE o.id = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
@@ -189,6 +190,7 @@ public class OrderDAO extends DAO {
                     if (memberCardId > 0) {
                         Membercard membercard = new Membercard();
                         membercard.setId(memberCardId);
+                        membercard.setPoint(rs.getInt("m.point"));
                         customer.setMembercard(membercard);
                     }
                     

@@ -1,12 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 
-<%-- Nếu chưa có dữ liệu dishes, redirect đến servlet để load sản phẩm mặc định --%>
+<%-- Lấy dữ liệu dishes từ request --%>
 <%
     List products = (List) request.getAttribute("dishes");
     if (products == null) {
-        response.sendRedirect(request.getContextPath() + "/searchDish");
-        return;
+        products = new java.util.ArrayList();
     }
 %>
 
@@ -41,21 +40,94 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Thực đơn - RestMan</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        body{ margin:0; font-family: "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
-               /* gradient requested */
-               background: linear-gradient(180deg, #f4cada 0%, #cef4f6 100%);
-               color:#0f172a; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; min-height:100vh }
+        body{ 
+            font-family: "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, #f4cada 0%, #cef4f6 100%);
+            color:#0f172a; 
+            -webkit-font-smoothing:antialiased; 
+            -moz-osx-font-smoothing:grayscale; 
+            min-height:100vh;
+        }
+
+        /* Header styling */
+        .header {
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 30px;
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            pointer-events: auto;
+        }
+
+        .back-btn {
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(16, 24, 40, 0.08);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 200ms ease;
+            pointer-events: auto;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            color: #0f172a;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+        }
 
     /* wrap/card act as layout shells; remove card visual so body background is sole background */
-    .wrap{ min-height:100vh; display:block; padding:0 }
+    .wrap{ 
+        min-height:100vh; 
+        display:flex;
+        flex-direction: column;
+        padding:0;
+    }
     /* add top padding so content flows below the header */
-    .card{ width:100%; max-width:980px; margin:0 auto; background:transparent; border-radius:0; padding:0 18px; box-shadow:none; position:relative; min-height:100vh; padding-top:120px }
+    .card{ 
+        width:100%; 
+        max-width:980px; 
+        margin:0 auto; 
+        background:transparent; 
+        border-radius:0; 
+        padding:0 18px; 
+        box-shadow:none; 
+        position:relative; 
+        min-height:100vh; 
+        padding-top:80px;
+        flex: 1;
+    }
 
     /* Header at top center (keep visible at top) */
     .card > h2, .card > p { text-align:center; margin:0 }
-    h2{ position:absolute; top:6vh; left:50%; transform:translateX(-50%); font-size:30px; color:#0f172a; font-weight:800 }
-    p{ margin-top:6px; color:rgba(15,23,42,0.9); font-size:16px; position:absolute; top:calc(6vh + 50px); left:50%; transform:translateX(-50%); z-index:10; width:100%; max-width:300px; white-space:normal; line-height:1.3 }
+    h2{ font-size:30px; color:#0f172a; font-weight:800 }
+    p.subtitle { 
+        margin-top:6px; 
+        color:rgba(15,23,42,0.9); 
+        font-size:16px;
+        line-height:1.3;
+    }
     
     /* Sửa cho thẻ p bên trong div message */
     .message p { position:static; transform:none; margin:0; color:#666; font-size:16px }
@@ -116,16 +188,91 @@
     }
 
     /* Grid for product tiles shown in remaining page area */
-    .dishes-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:18px; margin:18px auto 60px; max-width:980px }
-    .dish-tile{ background: rgba(255,255,255,0.9); border-radius:12px; padding:10px; box-shadow: 0 2px 6px rgba(15,23,42,0.06); display:flex; flex-direction:column; align-items:center; text-align:center }
-    .dish-tile img{ width:100%; height:140px; object-fit:cover; border-radius:8px; margin-bottom:10px; display:block }
-    .dish-name{ font-weight:700; color:#0f172a; margin-bottom:6px }
-    .dish-price{ color:#0b8457; font-weight:700 }
-    .product-type{ font-size:12px; color:#666; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px }
+    .dishes-grid{ 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+        gap: 16px; 
+        margin: 18px auto 60px; 
+        max-width: 980px;
+        padding: 0 10px;
+    }
     
-    .product-type.drink { color: #0284c7; font-weight: 700 }
-    .product-type.dish { color: #2e6a6c; font-weight: 700 }
-    .product-type.combo { color: #2d2380; font-weight: 700 }
+    .dish-tile{ 
+        background: rgba(255,255,255,0.92); 
+        border-radius: 10px; 
+        padding: 12px; 
+        box-shadow: 0 2px 8px rgba(15,23,42,0.08); 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        text-align: center;
+        transition: all 200ms ease;
+        cursor: pointer;
+    }
+    
+    .dish-tile:hover {
+        box-shadow: 0 4px 12px rgba(15,23,42,0.12);
+        transform: translateY(-2px);
+    }
+    
+    .dish-tile img{ 
+        width: 100%; 
+        height: 110px; 
+        object-fit: contain;
+        object-position: center;
+        border-radius: 6px; 
+        margin-bottom: 10px; 
+        display: block;
+        background: rgba(240, 240, 240, 0.5);
+        padding: 4px;
+    }
+    
+    .dish-name{ 
+        font-weight: 700; 
+        color: #0f172a; 
+        margin-bottom: 4px;
+        font-size: 13px;
+        line-height: 1.2;
+        min-height: 26px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .dish-price{ 
+        color: #0b8457; 
+        font-weight: 700;
+        font-size: 14px;
+    }
+    
+    .product-type{ 
+        font-size: 11px; 
+        color: #fff;
+        margin-bottom: 6px; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+    
+    .product-type.drink { 
+        background: #0284c7;
+        color: #fff;
+        font-weight: 700 
+    }
+    .product-type.dish { 
+        background: #2e6a6c;
+        color: #fff;
+        font-weight: 700 
+    }
+    .product-type.combo { 
+        background: #2d2380;
+        color: #fff;
+        font-weight: 700 
+    }
     
     .dish-link{ text-decoration:none; color:inherit; display:block }
     .dish-link:focus, .dish-link:hover .dish-tile{
@@ -139,8 +286,9 @@
             .form-row{ flex-direction:column; align-items:stretch }
             input[type="text"]{ width:100%; flex:1 }
             .card a.btn--ghost{ top:10px; left:10px }
-            .dish-tile img{ height:120px }
+            .dish-tile img{ height:90px; }
             .category-header { margin: 20px auto 12px }
+            .dishes-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
         }
 
         /* Nút scroll to top */
@@ -216,16 +364,30 @@
 </head>
 <body>
 <div class="wrap">
+    <div class="header">
+        <h1>RestMan</h1>
+        <a href="<%= request.getContextPath() %>/link" class="back-btn">Trở về</a>
+    </div>
+
     <div class="card">
-        <h2>Thực đơn</h2>
-        <p>Tìm sản phẩm yêu thích của bạn!</p>
+        <h2>Tìm kiếm món ăn</h2>
+        <p class="subtitle">Cùng khám phá thực đơn hôm nay của RestMan nhé!</p>
+
+        <%-- Hiển thị error message nếu có --%>
+        <% 
+            String error = (String) request.getAttribute("error");
+            if (error != null && !error.isEmpty()) {
+        %>
+            <div class="message" style="text-align:center; margin:20px auto; color:#d32f2f; font-size:16px; background:#ffebee; padding:15px; border-radius:8px; border-left:4px solid #d32f2f;">
+                <p><%= esc(error) %></p>
+            </div>
+        <% } %>
 
         <form action="<%= request.getContextPath() %>/searchDish" method="get">
             <div class="form-row">
                 <input type="text" name="keyword" placeholder="Nhập từ khóa..." value="<%= esc((String)request.getAttribute("keyword")) %>" />
                 <button type="submit" class="btn btn--primary">Tìm kiếm</button>
             </div>
-            <a href="<%= request.getContextPath() %>/link" class="btn btn--ghost" style="text-decoration:none;display:inline-flex;align-items:center;padding:10px 12px;border-radius:8px">Trở về</a>
         </form>
 
         <%-- Presentation: products list (Drink, Dish and Combo) is provided by servlets --%>

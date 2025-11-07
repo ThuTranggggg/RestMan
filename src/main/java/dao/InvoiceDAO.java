@@ -201,4 +201,20 @@ public class InvoiceDAO extends DAO {
         }
         return 0.0;
     }
+
+    /**
+     * Cộng điểm thẻ thành viên cho khách hàng
+     */
+    public boolean addBonusPointsToMembercard(int customerId, int bonusPoints) throws SQLException {
+        String sql = "UPDATE tblMemberCard SET point = point + ? " +
+                     "WHERE id = (SELECT tblMemberCardid FROM tblCustomer WHERE tblUserid = ?)";
+        
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, bonusPoints);
+            ps.setInt(2, customerId);
+            
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        }
+    }
 }

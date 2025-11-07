@@ -56,26 +56,35 @@
             display: flex;
             flex-direction: column;
             padding: 0;
+            position: relative;
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 9px 30px;
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            background: transparent;
+            padding: 0;
+            box-shadow: none;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 12px 30px;
+            pointer-events: none;
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 800;
             color: #0f172a;
+            pointer-events: auto;
         }
 
         .back-btn {
             padding: 10px 16px;
-            background: #f3f4f6;
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(16, 24, 40, 0.08);
             border-radius: 8px;
             cursor: pointer;
@@ -86,6 +95,8 @@
             align-items: center;
             gap: 8px;
             color: #0f172a;
+            pointer-events: auto;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
         }
 
         .back-btn:hover {
@@ -99,6 +110,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
 
         .invoice-container {
@@ -107,7 +119,7 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(15, 23, 42, 0.1);
-            overflow: hidden;
+            overflow: visible;
             display: flex;
             flex-direction: column;
         }
@@ -117,6 +129,8 @@
             padding: 10px 14px;
             border-bottom: 1px solid rgba(15, 23, 42, 0.08);
             text-align: center;
+            flex-shrink: 0;
+            border-radius: 8px 8px 0 0;
         }
 
         .invoice-header-title h2 {
@@ -129,8 +143,9 @@
         .invoice-content {
             padding: 11px 13px;
             flex: 1;
-            overflow-y: auto;
-            max-height: calc(100vh - 190px);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
         }
 
         .info-grid {
@@ -157,12 +172,29 @@
             line-height: 1.3;
         }
 
+        .invoice-fixed-top {
+            flex-shrink: 0;
+        }
+
+        .items-section {
+            flex-shrink: 0;
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+            padding: 9px 0;
+            margin: 9px 0;
+        }
+
         .items-section h3 {
             font-size: 13px;
             font-weight: 700;
             margin-bottom: 8px;
-            margin-top: 9px;
+            margin-top: 0;
             color: #0f172a;
+            padding: 0 0 8px 0;
+        }
+
+        .invoice-fixed-bottom {
+            flex-shrink: 0;
         }
 
         .items-table {
@@ -322,6 +354,30 @@
             font-size: 12px;
         }
 
+        .thank-you-section {
+            text-align: center;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(41, 98, 101, 0.08) 0%, rgba(17, 45, 89, 0.08) 100%);
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        }
+
+        .thank-you-section p {
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: 600;
+            line-height: 1.3;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .thank-you-section p:first-child {
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
         .action-buttons {
             padding: 10px 14px;
             background: rgba(15, 23, 42, 0.02);
@@ -330,6 +386,8 @@
             justify-content: center;
             flex-wrap: wrap;
             border-top: 1px solid rgba(15, 23, 42, 0.08);
+            flex-shrink: 0;
+            border-radius: 0 0 8px 8px;
         }
 
         .btn {
@@ -389,6 +447,10 @@
 
             .action-buttons {
                 display: none;
+            }
+
+            .thank-you-section {
+                display: block;
             }
         }
 
@@ -480,26 +542,28 @@
     <div class="invoice-wrapper">
         <div class="invoice-container">
             <div class="invoice-header-title">
-                <h2>Hóa đơn</h2>
+                <h2>Hóa đơn - RestMan</h2>
             </div>
 
             <div class="invoice-content">
-            <div class="info-grid">
-                <div class="info-item">
-                    <h4>Bàn</h4>
-                    <p><%= invoice.getTable().getName() %> (#<%= invoice.getTable().getId() %>)</p>
-                </div>
-                <div class="info-item">
-                    <h4>Khách hàng</h4>
-                    <p>
-                        <%
-                            if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0) {
-                                out.print(invoice.getCustomer().getFullName());
-                            } else {
-                                out.print("(Khách vãng lai)");
-                            }
-                        %>
-                    </p>
+            <div class="invoice-fixed-top">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>Bàn</h4>
+                        <p><%= invoice.getTable().getName() %> (#<%= invoice.getTable().getId() %>)</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Khách hàng</h4>
+                        <p>
+                            <%
+                                if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0) {
+                                    out.print(invoice.getCustomer().getFullName());
+                                } else {
+                                    out.print("(Khách vãng lai)");
+                                }
+                            %>
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -533,74 +597,80 @@
                 </table>
             </div>
 
-            <!-- Tóm tắt -->
-            <div class="summary-section">
-                <div class="summary-row total">
-                    <span>Tổng tiền:</span>
-                    <span><%= String.format("%,.0f", total) %> đ</span>
-                </div>
-                <%
-                    if (invoice.getBonusPoint() > 0) {
-                %>
-                <div class="summary-row bonus">
-                    <span>Điểm thưởng:</span>
-                    <span>+<%= invoice.getBonusPoint() %> điểm</span>
-                </div>
-                <%
-                    }
-                %>
-            </div>
-
-            <!-- Thẻ thành viên -->
-            <%
-                if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0 
-                    && invoice.getCustomer().getMembercard() != null) {
-            %>
-            <div class="membercard-section">
-                <div class="membercard-header">💳 Thẻ thành viên</div>
-                <div class="membercard-row">
-                    <span>ID thẻ:</span>
-                    <strong>#<%= invoice.getCustomer().getMembercard().getId() %></strong>
-                </div>
-                <div class="membercard-row">
-                    <span>Điểm hiện tại:</span>
-                    <strong><%= invoice.getCustomer().getMembercard().getPoint() %> điểm</strong>
-                </div>
-            </div>
-            <%
-                }
-            %>
-
-            <!-- Thông tin nhân viên -->
-            <div class="staff-info">
-                <div class="staff-name">
+            <div class="invoice-fixed-bottom">
+                <!-- Tóm tắt -->
+                <div class="summary-section">
+                    <div class="summary-row total">
+                        <span>Tổng tiền:</span>
+                        <span><%= String.format("%,.0f", total) %> đ</span>
+                    </div>
                     <%
-                        if (invoice.getServer() != null && invoice.getServer().getUser() != null) {
+                        if (invoice.getBonusPoint() > 0) {
                     %>
-                    Nhân viên: <strong><%= invoice.getServer().getUser().getFullName() %></strong>
-                    <%
-                        } else {
-                    %>
-                    <strong>Chưa có thông tin nhân viên</strong>
+                    <div class="summary-row bonus">
+                        <span>Điểm thưởng:</span>
+                        <span>+<%= invoice.getBonusPoint() %> điểm</span>
+                    </div>
                     <%
                         }
                     %>
                 </div>
-                <div class="staff-time">
-                    <%= invoice.getDatetime().format(formatter) %>
+
+                <!-- Thẻ thành viên -->
+                <%
+                    if (invoice.getCustomer() != null && invoice.getCustomer().getId() > 0 
+                        && invoice.getCustomer().getMembercard() != null) {
+                %>
+                <div class="membercard-section">
+                    <div class="membercard-header">💳 Thẻ thành viên</div>
+                    <div class="membercard-row">
+                        <span>ID thẻ:</span>
+                        <strong>#<%= invoice.getCustomer().getMembercard().getId() %></strong>
+                    </div>
+                    <div class="membercard-row">
+                        <span>Điểm hiện tại:</span>
+                        <strong><%= invoice.getCustomer().getMembercard().getPoint() %> điểm</strong>
+                    </div>
+                </div>
+                <%
+                    }
+                %>
+
+                <!-- Thông tin nhân viên -->
+                <div class="staff-info">
+                    <div class="staff-name">
+                        <%
+                            if (invoice.getServer() != null && invoice.getServer().getUser() != null) {
+                        %>
+                        Nhân viên: <strong><%= invoice.getServer().getUser().getFullName() %></strong>
+                        <%
+                            } else {
+                        %>
+                        <strong>Chưa có thông tin nhân viên</strong>
+                        <%
+                            }
+                        %>
+                    </div>
+                    <div class="staff-time">
+                        <%= invoice.getDatetime().format(formatter) %>
+                    </div>
+                </div>
+
+                <!-- Dòng cảm ơn khách hàng -->
+                <div class="thank-you-section">
+                    <p>Cảm ơn quý khách! RestMan mong được phục vụ bạn lần tới</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button onclick="printInvoice()" class="btn btn-print">
-                🖨️ In hóa đơn
-            </button>
-        </div>
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button onclick="printInvoice()" class="btn btn-print">
+                    In hóa đơn
+                </button>
             </div>
         </div>
     </div>
+</div>
 </div>
 </body>
 </html>

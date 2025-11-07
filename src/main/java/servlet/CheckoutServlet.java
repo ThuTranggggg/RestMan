@@ -74,6 +74,16 @@ public class CheckoutServlet extends HttpServlet {
             int invoiceId = invoiceDAO.createInvoice(orderId, staff.getUser().getId(), bonusPoint);
             
             if (invoiceId > 0) {
+                // ✅ Cộng điểm thẻ thành viên cho khách hàng
+                if (order.getCustomer() != null && bonusPoint > 0) {
+                    try {
+                        invoiceDAO.addBonusPointsToMembercard(order.getCustomer().getId(), bonusPoint);
+                    } catch (Exception e) {
+                        // Log lỗi nhưng không dừng quy trình
+                        System.err.println("Lỗi cộng điểm thành viên: " + e.getMessage());
+                    }
+                }
+                
                 // ✅ Không xóa Order - để lưu lịch sử
                 // Cập nhật trạng thái bàn về 0 (trống)
                 TableDAO tableDAO = new TableDAO();

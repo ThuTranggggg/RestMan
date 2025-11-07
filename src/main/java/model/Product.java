@@ -12,6 +12,14 @@ public class Product {
     public Product() {
     }
 
+    public Product(String name, String description, float price, String type) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.type = type;
+        this.sold = 0;  // Default value
+    }
+
     public Product(String name, String description, float price, int sold, String type) {
         this.name = name;
         this.description = description;
