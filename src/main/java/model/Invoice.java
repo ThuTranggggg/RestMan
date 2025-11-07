@@ -3,54 +3,34 @@ package model;
 import java.time.LocalDateTime;
 
 public class Invoice extends Order {
-    private int invoiceId;  // Invoice ID từ tblInvoice
-    private float total;
-    private Server server;  // FK tới Server (nhân viên phục vụ)
+    private int orderId;  // ID của Order gốc
+    private Server server;
     private int bonusPoint;
-    private LocalDateTime datetime;  // Thời gian tạo hóa đơn (khi nhân viên xác nhận)
+    private LocalDateTime datetime;
 
     public Invoice() {
         super();
     }
 
-    public Invoice(Table table, Customer customer, float total, Server server, int bonusPoint) {
+    public Invoice(Table table, Customer customer, Server server, int bonusPoint) {
         super(table, customer);
-        this.total = total;
         this.server = server;
         this.bonusPoint = bonusPoint;
         this.datetime = LocalDateTime.now();
     }
 
-    public Invoice(int id, Table table, Customer customer, float total, Server server, int bonusPoint) {
+    public Invoice(int id, Table table, Customer customer, Server server, int bonusPoint) {
         super(id, table, customer);
-        this.total = total;
         this.server = server;
         this.bonusPoint = bonusPoint;
         this.datetime = LocalDateTime.now();
     }
 
-    public Invoice(int id, Table table, Customer customer, float total, Server server, int bonusPoint, LocalDateTime datetime) {
+    public Invoice(int id, Table table, Customer customer, Server server, int bonusPoint, LocalDateTime datetime) {
         super(id, table, customer);
-        this.total = total;
         this.server = server;
         this.bonusPoint = bonusPoint;
         this.datetime = datetime;
-    }
-
-    public int getInvoiceId() {
-        return invoiceId;
-    }
-
-    public void setInvoiceId(int invoiceId) {
-        this.invoiceId = invoiceId;
-    }
-
-    public float getTotal() {
-        return total;
-    }
-
-    public void setTotal(float total) {
-        this.total = total;
     }
 
     public Server getServer() {
@@ -77,6 +57,14 @@ public class Invoice extends Order {
         this.datetime = datetime;
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -84,7 +72,6 @@ public class Invoice extends Order {
                 ", customer=" + this.getCustomer() +
                 ", table=" + this.getTable() +
                 ", datetime=" + datetime +
-                ", total=" + total +
                 ", bonusPoint=" + bonusPoint +
                 ", server=" + server +
                 '}';

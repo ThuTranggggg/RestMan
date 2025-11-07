@@ -202,55 +202,78 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 12px;
-            font-size: 12px;
+            font-size: 13px;
+            table-layout: fixed;
         }
 
         .items-table thead {
-            background: rgba(15, 23, 42, 0.05);
+            background: rgba(15, 23, 42, 0.04);
         }
 
         .items-table th {
-            padding: 8px;
+            padding: 6px 6px;
             text-align: left;
             font-size: 12px;
             font-weight: 700;
             color: #0f172a;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+            word-wrap: break-word;
         }
 
-        .items-table th:first-child {
-            width: 30px;
+        .items-table th:nth-child(1) {
+            width: 10%;
+            text-align: left;
+        }
+
+        .items-table th:nth-child(2) {
+            width: 40%;
+            text-align: left;
+        }
+
+        .items-table th:nth-child(3) {
+            width: 20%;
+            text-align: right;
+        }
+
+        .items-table th:nth-child(4) {
+            width: 15%;
             text-align: center;
         }
 
-        .items-table th:nth-child(2),
-        .items-table th:nth-child(3),
-        .items-table th:nth-child(4),
         .items-table th:nth-child(5) {
+            width: 15%;
             text-align: right;
         }
 
         .items-table td {
-            padding: 8px;
-            border-bottom: 1px solid rgba(15, 23, 42, 0.08);
-            font-size: 12px;
+            padding: 6px 6px;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.05);
+            font-size: 13px;
+            word-wrap: break-word;
         }
 
-        .items-table td:first-child {
-            width: 30px;
+        .items-table td:nth-child(1) {
+            text-align: left;
+        }
+
+        .items-table td:nth-child(2) {
+            text-align: left;
+        }
+
+        .items-table td:nth-child(3) {
+            text-align: right;
+        }
+
+        .items-table td:nth-child(4) {
             text-align: center;
-            font-weight: 600;
-            color: #999;
         }
 
-        .items-table td:nth-child(2),
-        .items-table td:nth-child(3),
-        .items-table td:nth-child(4),
         .items-table td:nth-child(5) {
             text-align: right;
         }
 
         .items-table .item-name {
-            font-weight: 700;
+            font-weight: 600;
             color: #0f172a;
         }
 

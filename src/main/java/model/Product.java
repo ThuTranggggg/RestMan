@@ -6,8 +6,8 @@ public class Product {
     private String description;
     private String imageUrl;
     private float price;
-    private int sold;
-    private String type; // "DISH" hoặc "COMBO"
+    private int status;
+    private String type; // "DRINK" - "DISH" - "COMBO"
 
     public Product() {
     }
@@ -16,15 +16,6 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.type = type;
-        this.sold = 0;  // Default value
-    }
-
-    public Product(String name, String description, float price, int sold, String type) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.sold = sold;
         this.type = type;
     }
 
@@ -68,12 +59,12 @@ public class Product {
         this.price = price;
     }
 
-    public int getSold() {
-        return sold;
+    public int getStatus() {
+        return status;
     }
 
-    public void setSold(int sold) {
-        this.sold = sold;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getType() {

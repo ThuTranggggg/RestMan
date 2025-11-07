@@ -38,7 +38,7 @@ public class LinkServerlet extends HttpServlet {
                 ProductDAO dao = new ProductDAO();
                 String contextPath = req.getContextPath();
                 List<Product> list;
-                if (kw != null && kw.trim().length() > 0) {
+                if (kw != null && !kw.trim().isEmpty()) {
                     // User searched — load matching products
                     list = dao.searchByKeyword(kw, contextPath);
                     req.setAttribute("keyword", kw);

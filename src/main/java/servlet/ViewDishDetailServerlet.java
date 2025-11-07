@@ -49,10 +49,6 @@ public class ViewDishDetailServerlet extends HttpServlet {
             
             // Get image URL from product (already resolved by ProductDAO)
             String dishImageUrl = product.getImageUrl();
-            if (dishImageUrl == null || dishImageUrl.isEmpty()) {
-                dishImageUrl = contextPath + "/img/defaultImage.png";
-            }
-            
             req.setAttribute("dishImageUrl", dishImageUrl);
             req.getRequestDispatcher("/WEB-INF/Customer/DishDetailPage.jsp").forward(req, resp);
         } catch (NumberFormatException ex) {

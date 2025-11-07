@@ -14,10 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO extends DAO {
-
-    /**
-     * Lấy chi tiết đơn hàng theo Order ID
-     */
     public List<OrderDetail> getOrderDetails(int orderId) throws SQLException {
         List<OrderDetail> details = new ArrayList<>();
         String sql = "SELECT od.id, od.quantity, od.tblProductid, " +
@@ -38,108 +34,20 @@ public class OrderDAO extends DAO {
                 product.setType(rs.getString("p.type"));
                 product.setImageUrl(rs.getString("p.imageUrl"));
                 
-                // ✅ FIX: Tạo Order object (không null)
+                //Tạo Order object (không null)
                 Order order = new Order();
                 order.setId(orderId);
                 
                 OrderDetail detail = new OrderDetail(
                     rs.getInt("od.id"),
                     rs.getInt("od.quantity"),
-                    "PENDING",  // Status mặc định là PENDING
                     product,
-                    order  // ✅ order không null
+                    order  //order không null
                 );
                 details.add(detail);
             }
         }
         return details;
-    }
-
-    /**
-     * Tạo đơn hàng mới
-     */
-    public int createOrder(int tableId, int customerId) throws SQLException {
-        String sql = "INSERT INTO tblOrder (tblTableid, tblCustomertblUserid) VALUES (?, ?)";
-        
-        try (PreparedStatement ps = getConnection().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, tableId);
-            if (customerId > 0) {
-                ps.setInt(2, customerId);
-            } else {
-                ps.setNull(2, java.sql.Types.INTEGER);
-            }
-            
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows > 0) {
-                ResultSet generatedKeys = ps.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * Thêm sản phẩm vào đơn hàng
-     */
-    public boolean addOrderDetail(int orderId, int productId, int quantity) throws SQLException {
-        // Kiểm tra nếu sản phẩm đã có trong đơn hàng, thì cập nhật quantity
-        String checkSql = "SELECT id, quantity FROM tblOrderDetail WHERE tblOrderid = ? AND tblProductid = ?";
-        try (PreparedStatement checkPs = getConnection().prepareStatement(checkSql)) {
-            checkPs.setInt(1, orderId);
-            checkPs.setInt(2, productId);
-            ResultSet rs = checkPs.executeQuery();
-            
-            if (rs.next()) {
-                // Cập nhật quantity
-                int newQuantity = rs.getInt("quantity") + quantity;
-                String updateSql = "UPDATE tblOrderDetail SET quantity = ? WHERE id = ?";
-                try (PreparedStatement updatePs = getConnection().prepareStatement(updateSql)) {
-                    updatePs.setInt(1, newQuantity);
-                    updatePs.setInt(2, rs.getInt("id"));
-                    return updatePs.executeUpdate() > 0;
-                }
-            }
-        }
-        
-        // Thêm sản phẩm mới
-        String insertSql = "INSERT INTO tblOrderDetail (tblOrderid, tblProductid, quantity) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = getConnection().prepareStatement(insertSql)) {
-            ps.setInt(1, orderId);
-            ps.setInt(2, productId);
-            ps.setInt(3, quantity);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    /**
-     * Xóa sản phẩm khỏi đơn hàng
-     */
-    public boolean removeOrderDetail(int detailId) throws SQLException {
-        String sql = "DELETE FROM tblOrderDetail WHERE id = ?";
-        
-        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, detailId);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    /**
-     * Cập nhật số lượng sản phẩm trong đơn hàng
-     */
-    public boolean updateOrderDetailQuantity(int detailId, int quantity) throws SQLException {
-        if (quantity <= 0) {
-            return removeOrderDetail(detailId);
-        }
-        
-        String sql = "UPDATE tblOrderDetail SET quantity = ? WHERE id = ?";
-        
-        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, quantity);
-            ps.setInt(2, detailId);
-            return ps.executeUpdate() > 0;
-        }
     }
 
     /**
@@ -200,37 +108,12 @@ public class OrderDAO extends DAO {
                     order.setCustomer(null);
                 }
                 
-                // Load order details
-                order.setProducts(null); // Sẽ load riêng nếu cần
-                
                 return order;
             }
         }
         return null;
     }
 
-    /**
-     * Xóa đơn hàng (cùng với tất cả chi tiết)
-     */
-    public boolean deleteOrder(int orderId) throws SQLException {
-        // Xóa chi tiết đơn hàng trước
-        String deleteDetailsSql = "DELETE FROM tblOrderDetail WHERE tblOrderid = ?";
-        try (PreparedStatement ps = getConnection().prepareStatement(deleteDetailsSql)) {
-            ps.setInt(1, orderId);
-            ps.executeUpdate();
-        }
-        
-        // Xóa đơn hàng
-        String deleteOrderSql = "DELETE FROM tblOrder WHERE id = ?";
-        try (PreparedStatement ps = getConnection().prepareStatement(deleteOrderSql)) {
-            ps.setInt(1, orderId);
-            return ps.executeUpdate() > 0;
-        }
-    }
-
-    /**
-     * Tính tổng tiền của đơn hàng
-     */
     public double calculateOrderTotal(int orderId) throws SQLException {
         String sql = "SELECT SUM(od.quantity * p.price) as total " +
                      "FROM tblOrderDetail od " +

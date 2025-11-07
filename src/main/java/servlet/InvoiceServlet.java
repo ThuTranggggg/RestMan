@@ -47,12 +47,12 @@ public class InvoiceServlet extends HttpServlet {
                 return;
             }
             
-            // Lấy chi tiết đơn hàng (dùng order id từ invoice)
+            // Lấy chi tiết đơn hàng bằng orderId, không phải invoice.getId()
             OrderDAO orderDAO = new OrderDAO();
-            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(invoice.getId());
+            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(invoice.getOrderId());
             
-            // Tính tổng tiền (dùng order id từ invoice)
-            double total = orderDAO.calculateOrderTotal(invoice.getId());
+            // Tính tổng tiền bằng orderId
+            double total = orderDAO.calculateOrderTotal(invoice.getOrderId());
             
             request.setAttribute("invoice", invoice);
             request.setAttribute("orderDetails", orderDetails);
@@ -67,22 +67,6 @@ public class InvoiceServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("error", "Lỗi khi lấy thông tin hóa đơn: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/Staff/SearchTablePage.jsp").forward(request, response);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
-        
-        if ("print".equals(action)) {
-            // Xử lý in hóa đơn (sẽ implement sau)
-            doGet(request, response);
-        } else if ("pdf".equals(action)) {
-            // Xử lý xuất PDF (sẽ implement sau)
-            doGet(request, response);
-        } else {
-            doGet(request, response);
         }
     }
 }

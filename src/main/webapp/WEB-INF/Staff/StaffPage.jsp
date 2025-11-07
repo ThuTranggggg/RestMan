@@ -207,7 +207,7 @@
         <h1>RestMan</h1>
         <div class="user-info">
             <div class="user-name">
-                <strong><%= staff.getUser().getFullName() %></strong>
+                <strong><%= staff.getFullName() %></strong>
                 <span><%= staff.getPosition() %></span>
             </div>
             <form action="<%= request.getContextPath() %>/staffPage" method="post" style="margin: 0;">

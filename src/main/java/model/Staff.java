@@ -1,23 +1,15 @@
 package model;
 
-public class Staff {
-    private User user;  // FK tới User
+public class Staff extends User {
     private String position;
 
     public Staff() {
+        super();
     }
 
-    public Staff(User user, String position) {
-        this.user = user;
+    public Staff(int id, String fullName, String phone, String email, String username, String password, String role, String position) {
+        super(id, fullName, phone, email, username, password, role);
         this.position = position;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getPosition() {
@@ -31,7 +23,13 @@ public class Staff {
     @Override
     public String toString() {
         return "Staff{" +
-                "user=" + user +
+                "id=" + this.getId() +
+                ", fullName='" + this.getFullName() + '\'' +
+                ", phone='" + this.getPhone() + '\'' +
+                ", email='" + this.getEmail() + '\'' +
+                ", username='" + this.getUsername() + '\'' +
+                ", password='" + this.getPassword() + '\'' +
+                ", role='" + this.getRole() + '\'' +
                 ", position='" + position + '\'' +
                 '}';
     }

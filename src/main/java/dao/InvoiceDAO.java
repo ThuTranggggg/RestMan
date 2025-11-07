@@ -2,10 +2,7 @@ package dao;
 
 import model.Invoice;
 import model.Order;
-import model.OrderDetail;
-import model.Product;
 import model.Server;
-import model.User;
 import model.Customer;
 import model.Table;
 
@@ -13,14 +10,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;
 import java.time.LocalDateTime;
 
 public class InvoiceDAO extends DAO {
-
-    /**
-     * Kiểm tra staffId có tồn tại trong bảng tblServer
-     */
     private boolean isServerExists(int staffId) throws SQLException {
         String sql = "SELECT 1 FROM tblServer WHERE tblStafftblUserId = ? LIMIT 1";
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
@@ -30,9 +22,6 @@ public class InvoiceDAO extends DAO {
         }
     }
 
-    /**
-     * Tạo hóa đơn từ đơn hàng
-     */
     public int createInvoice(int orderId, int staffId, int bonusPoint) throws SQLException {
         String sql = "INSERT INTO tblInvoice (tblOrderid, tblServertblStafftblUserid, bonusPoint, datetime) " +
                      "VALUES (?, ?, ?, NOW())";
@@ -60,9 +49,7 @@ public class InvoiceDAO extends DAO {
         return -1;
     }
 
-    /**
-     * Lấy thông tin hóa đơn theo Invoice ID
-     */
+    //Lấy thông tin hóa đơn theo Invoice ID
     public Invoice getInvoiceById(int invoiceId) throws SQLException {
         String sql = "SELECT i.id, i.tblOrderid, i.tblServertblStafftblUserid, i.bonusPoint, i.datetime, " +
                      "u.id as staff_id, u.fullName as staff_name, u.phone, u.email, u.username, u.password, u.role, " +
@@ -83,16 +70,16 @@ public class InvoiceDAO extends DAO {
                 Server server = null;
                 int staffId = rs.getInt("staff_id");
                 if (staffId > 0) {
-                    User staffUser = new User(
+                    server = new Server(
                         staffId,
                         rs.getString("staff_name"),
-                        rs.getString("u.phone"),
-                        rs.getString("u.email"),
-                        rs.getString("u.username"),
-                        rs.getString("u.password"),
-                        rs.getString("u.role")
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getString("position")
                     );
-                    server = new Server(staffUser, rs.getString("position"));
                 }
                 
                 // Load Order info
@@ -117,18 +104,18 @@ public class InvoiceDAO extends DAO {
                 
                 int orderId = rs.getInt("tblOrderid");
                 int invoiceIdValue = rs.getInt("i.id");
-                
-                // Invoice kế thừa Order (mà không có created_at)
+
                 Invoice invoice = new Invoice(
-                    orderId,  // Set Order ID
+                    invoiceIdValue,  // Invoice ID (kế thừa từ Order.id để tương thích)
                     table,
                     customer,
-                    0, // total - sẽ tính từ OrderDetail
                     server,
                     rs.getInt("bonusPoint"),
                     datetime
                 );
-                invoice.setInvoiceId(invoiceIdValue);  // Set Invoice ID riêng
+                
+                //Set orderId riêng để lấy OrderDetails
+                invoice.setOrderId(orderId);
                 
                 // Load OrderDetails
                 OrderDAO orderDAO = new OrderDAO();
@@ -136,16 +123,6 @@ public class InvoiceDAO extends DAO {
                 if (order != null) {
                     invoice.setTable(order.getTable());
                     invoice.setCustomer(order.getCustomer());
-                    // Load OrderDetails để convert thành Products
-                    List<OrderDetail> orderDetails = orderDAO.getOrderDetails(orderId);
-                    // Chuyển OrderDetails thành Products list
-                    java.util.List<Product> products = new java.util.ArrayList<>();
-                    if (orderDetails != null) {
-                        for (OrderDetail detail : orderDetails) {
-                            products.add(detail.getProduct());
-                        }
-                    }
-                    invoice.setProducts(products);
                 }
                 
                 return invoice;
@@ -154,57 +131,7 @@ public class InvoiceDAO extends DAO {
         return null;
     }
 
-    /**
-     * Lấy danh sách hóa đơn theo ngày
-     */
-    public java.util.List<Invoice> getInvoicesByDate(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
-        java.util.List<Invoice> invoices = new java.util.ArrayList<>();
-        String sql = "SELECT i.id, i.tblOrderid, i.tblServertblStafftblUserid, i.bonusPoint, i.datetime " +
-                     "FROM tblInvoice i " +
-                     "WHERE DATE(i.datetime) BETWEEN ? AND ? " +
-                     "ORDER BY i.datetime DESC";
-        
-        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(startDate));
-            ps.setTimestamp(2, Timestamp.valueOf(endDate));
-            ResultSet rs = ps.executeQuery();
-            
-            while (rs.next()) {
-                Invoice invoice = getInvoiceById(rs.getInt("id"));
-                if (invoice != null) {
-                    invoices.add(invoice);
-                }
-            }
-        }
-        return invoices;
-    }
 
-    /**
-     * Tính tổng doanh thu theo ngày
-     */
-    public double calculateRevenueByDate(LocalDateTime startDate, LocalDateTime endDate) throws SQLException {
-        String sql = "SELECT SUM(od.quantity * p.price) as total_revenue " +
-                     "FROM tblInvoice i " +
-                     "INNER JOIN tblOrder o ON i.tblOrderid = o.id " +
-                     "INNER JOIN tblOrderDetail od ON o.id = od.tblOrderid " +
-                     "INNER JOIN tblProduct p ON od.tblProductid = p.id " +
-                     "WHERE DATE(i.datetime) BETWEEN ? AND ?";
-        
-        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(startDate));
-            ps.setTimestamp(2, Timestamp.valueOf(endDate));
-            ResultSet rs = ps.executeQuery();
-            
-            if (rs.next()) {
-                return rs.getDouble("total_revenue");
-            }
-        }
-        return 0.0;
-    }
-
-    /**
-     * Cộng điểm thẻ thành viên cho khách hàng
-     */
     public boolean addBonusPointsToMembercard(int customerId, int bonusPoints) throws SQLException {
         String sql = "UPDATE tblMemberCard SET point = point + ? " +
                      "WHERE id = (SELECT tblMemberCardid FROM tblCustomer WHERE tblUserid = ?)";

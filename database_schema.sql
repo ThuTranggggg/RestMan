@@ -134,12 +134,16 @@ CREATE TABLE tblOrderDetail (
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
+-- =====================================================
+-- INVOICE (Hóa đơn - extends Order)
+-- 1-to-1 relationship: 1 Order -> tối đa 1 Invoice
+-- =====================================================
 CREATE TABLE tblInvoice (
-  id                         INT PRIMARY KEY AUTO_INCREMENT,
+  id                         INT PRIMARY KEY AUTO_INCREMENT,  -- Invoice ID (khóa chính)
+  tblOrderid                 INT NOT NULL,                    -- FK tới Order (1-to-1)
   datetime                   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bonusPoint                 INT DEFAULT 0,
-  tblOrderid                 INT NOT NULL,
-  tblServertblStafftblUserid INT,            -- người phục vụ lập hoá đơn
+  tblServertblStafftblUserid INT,                              -- người phục vụ lập hoá đơn
   CONSTRAINT fk_invoice_order FOREIGN KEY (tblOrderid) REFERENCES tblOrder(id)
     ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT fk_invoice_server FOREIGN KEY (tblServertblStafftblUserid) REFERENCES tblServer(tblStafftblUserId)
@@ -155,6 +159,7 @@ CREATE INDEX idx_product_name ON tblProduct(name);
 CREATE INDEX idx_product_status ON tblProduct(status);
 CREATE INDEX idx_orderdetail_order ON tblOrderDetail(tblOrderid);
 CREATE INDEX idx_orderdetail_product ON tblOrderDetail(tblProductid);
+CREATE INDEX idx_invoice_id ON tblInvoice(id);
 CREATE INDEX idx_invoice_order ON tblInvoice(tblOrderid);
 CREATE INDEX idx_comboitem_combo ON tblComboItem(tblProductid_Combo);
 CREATE INDEX idx_comboitem_dish ON tblComboItem(tblProductid_Dish);

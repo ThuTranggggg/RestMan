@@ -22,8 +22,6 @@ public class LoginServlet extends HttpServlet {
         
         if ("staff".equals(role)) {
             request.getRequestDispatcher("/WEB-INF/Staff/LoginPage.jsp").forward(request, response);
-        } else if ("customer".equals(role)) {
-            request.getRequestDispatcher("/WEB-INF/Customer/LoginPage.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/");
         }
@@ -43,8 +41,6 @@ public class LoginServlet extends HttpServlet {
         
         if ("staff".equals(role)) {
             handleStaffLogin(request, response, username, password);
-        } else if ("customer".equals(role)) {
-            handleCustomerLogin(request, response, username, password);
         } else {
             response.sendRedirect(request.getContextPath() + "/");
         }
@@ -66,11 +62,5 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/login?role=staff&error=db");
         }
-    }
-
-    private void handleCustomerLogin(HttpServletRequest request, HttpServletResponse response,
-                                      String username, String password) throws ServletException, IOException {
-        // Để implement khi cần
-        response.sendRedirect(request.getContextPath() + "/login?role=customer&error=notimpl");
     }
 }

@@ -6,14 +6,15 @@ public class StockClerk extends Staff {
         super();
     }
 
-    public StockClerk(User user, String position) {
-        super(user, position);
+    public StockClerk(int id, String fullName, String phone, String email, String username, String password, String role, String position) {
+        super(id, fullName, phone, email, username, password, role, position);
     }
 
     @Override
     public String toString() {
         return "StockClerk{" +
-                "user=" + this.getUser() +
+                "id=" + this.getId() +
+                ", fullName='" + this.getFullName() + '\'' +
                 ", position='" + this.getPosition() + '\'' +
                 '}';
     }

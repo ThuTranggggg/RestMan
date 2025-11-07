@@ -1,7 +1,6 @@
 package model;
 
 public class Customer extends User {
-    // ✅ FIX: Loại bỏ private User user; (đã inherited từ User)
     private Membercard membercard;
 
     public Customer(){
@@ -18,8 +17,6 @@ public class Customer extends User {
         super(id, fullName, phone, email, username, password, role);
         this.membercard = membercard;
     }
-
-    // ✅ FIX: Loại bỏ getUser()/setUser() - dùng thẳng từ parent class User
 
     public Membercard getMembercard() {
         return membercard;

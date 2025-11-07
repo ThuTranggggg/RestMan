@@ -10,18 +10,8 @@ public class ProductDAO extends DAO {
 
     public ProductDAO() { }
 
-    /**
-     * Resolves the image URL for display, applying fallback logic.
-     * If no URL is set or empty, uses a default image placeholder.
-     * If URL is absolute or context-rooted, returns as-is.
-     * Otherwise extracts filename and maps to /img/ folder.
-     *
-     * @param rawImg the raw image URL from database
-     * @param contextPath the request context path
-     * @return resolved image URL safe for use in <img src="">
-     */
     private String resolveImageUrl(String rawImg, String contextPath) {
-        if (rawImg == null || rawImg.trim().length() == 0) {
+        if (rawImg == null || rawImg.trim().isEmpty()) {
             return contextPath + "/img/defaultImage.png";
         }
 
@@ -39,10 +29,6 @@ public class ProductDAO extends DAO {
         return contextPath + "/img/" + filename;
     }
 
-    /**
-     * Chuyển đổi Product từ ResultSet thành đối tượng Java
-     * Trả về đối tượng Product (dùng type để lưu loại sản phẩm)
-     */
     private Product mapRowToProduct(ResultSet rs, String contextPath) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("name");
@@ -62,25 +48,10 @@ public class ProductDAO extends DAO {
         return product;
     }
 
-    /**
-     * Tìm kiếm sản phẩm theo keyword trong tên hoặc mô tả.
-     * Trả về cả DRINK, DISH và COMBO, sắp xếp theo loại (DRINK → DISH → COMBO) và giá tăng dần
-     *
-     * @param keyword từ khóa tìm kiếm
-     * @return danh sách Product
-     */
     public List<Product> searchByKeyword(String keyword) throws SQLException {
         return searchByKeyword(keyword, "");
     }
 
-    /**
-     * Tìm kiếm sản phẩm theo keyword trong tên hoặc mô tả.
-     * Trả về cả DRINK, DISH và COMBO, sắp xếp theo loại (DRINK → DISH → COMBO) và giá tăng dần
-     *
-     * @param keyword từ khóa tìm kiếm
-     * @param contextPath đường dẫn context web để resolve hình ảnh
-     * @return danh sách Product với hình ảnh đã được resolve
-     */
     public List<Product> searchByKeyword(String keyword, String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl
@@ -113,13 +84,6 @@ public class ProductDAO extends DAO {
         return list;
     }
 
-    /**
-     * Lấy tất cả sản phẩm (DRINK, DISH và COMBO) từ CSDL
-     * Sắp xếp theo loại (DRINK → DISH → COMBO) và giá tăng dần
-     *
-     * @param contextPath đường dẫn context web để resolve hình ảnh
-     * @return danh sách tất cả Product với hình ảnh đã được resolve
-     */
     public List<Product> getAllProducts(String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl
@@ -148,23 +112,11 @@ public class ProductDAO extends DAO {
         return list;
     }
 
-    /**
-     * Lấy chi tiết một sản phẩm (DRINK, DISH hoặc COMBO) theo ID
-     *
-     * @param id ID của sản phẩm
-     * @return Product object, hoặc null nếu không tìm thấy
-     */
+
     public Product getProductDetail(int id) throws SQLException {
         return getProductDetail(id, "");
     }
 
-    /**
-     * Lấy chi tiết một sản phẩm (DRINK, DISH hoặc COMBO) theo ID
-     *
-     * @param id ID của sản phẩm
-     * @param contextPath đường dẫn context web
-     * @return Product object, hoặc null nếu không tìm thấy
-     */
     public Product getProductDetail(int id, String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl
@@ -185,12 +137,7 @@ public class ProductDAO extends DAO {
         return null;
     }
 
-    /**
-     * Lấy tất cả DRINK (type = 'DRINK')
-     *
-     * @param contextPath đường dẫn context web
-     * @return danh sách Product có type = 'DRINK'
-     */
+
     public List<Product> getAllDrinks(String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl
@@ -211,12 +158,6 @@ public class ProductDAO extends DAO {
         return list;
     }
 
-    /**
-     * Lấy tất cả DISH (type = 'DISH')
-     *
-     * @param contextPath đường dẫn context web
-     * @return danh sách Product có type = 'DISH'
-     */
     public List<Product> getAllDishes(String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl
@@ -237,12 +178,6 @@ public class ProductDAO extends DAO {
         return list;
     }
 
-    /**
-     * Lấy tất cả COMBO (type = 'COMBO')
-     *
-     * @param contextPath đường dẫn context web
-     * @return danh sách Product có type = 'COMBO'
-     */
     public List<Product> getAllCombos(String contextPath) throws SQLException {
         String sql = """
             SELECT id, name, description, price, type, imageUrl

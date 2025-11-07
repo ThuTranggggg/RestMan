@@ -43,6 +43,13 @@
       <scope>test</scope>
     </dependency>
     
+    <!-- dotenv-java for environment variables -->
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>dotenv-java</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    
     <!-- JSTL API and Implementation (compatible with Servlet 4.0 / JSP 2.3) -->
     <dependency>
       <groupId>javax.servlet.jsp.jstl</groupId>
@@ -84,6 +91,17 @@
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
           <version>3.2.2</version>
+          <configuration>
+            <webResources>
+              <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                  <include>.env</include>
+                </includes>
+                <targetPath>WEB-INF/classes</targetPath>
+              </resource>
+            </webResources>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>

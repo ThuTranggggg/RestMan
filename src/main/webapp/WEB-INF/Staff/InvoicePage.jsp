@@ -220,20 +220,26 @@
         }
 
         .items-table th:nth-child(1) {
-            width: 50%;
+            width: 10%;
+            text-align: left;
         }
 
         .items-table th:nth-child(2) {
+            width: 40%;
+            text-align: left;
+        }
+
+        .items-table th:nth-child(3) {
             width: 20%;
             text-align: right;
         }
 
-        .items-table th:nth-child(3) {
+        .items-table th:nth-child(4) {
             width: 15%;
             text-align: center;
         }
 
-        .items-table th:nth-child(4) {
+        .items-table th:nth-child(5) {
             width: 15%;
             text-align: right;
         }
@@ -250,12 +256,24 @@
             color: #0f172a;
         }
 
+        .items-table td:nth-child(1) {
+            text-align: left;
+        }
+
         .items-table td:nth-child(2) {
-            text-align: right;
+            text-align: left;
         }
 
         .items-table td:nth-child(3) {
+            text-align: right;
+        }
+
+        .items-table td:nth-child(4) {
             text-align: center;
+        }
+
+        .items-table td:nth-child(5) {
+            text-align: right;
         }
 
         .items-table .item-price {
@@ -573,6 +591,7 @@
                 <table class="items-table">
                     <thead>
                         <tr>
+                            <th>STT</th>
                             <th>Sản phẩm</th>
                             <th>Đơn giá</th>
                             <th>Số lượng</th>
@@ -585,10 +604,11 @@
                                 double itemTotal = detail.getQuantity() * detail.getProduct().getPrice();
                         %>
                         <tr>
+                            <td><%= orderDetails.indexOf(detail) + 1 %></td>
                             <td class="item-name"><%= detail.getProduct().getName() %></td>
-                            <td class="item-price"><%= String.format("%,.0f", detail.getProduct().getPrice()) %> đ</td>
-                            <td style="text-align: center;"><%= detail.getQuantity() %></td>
-                            <td class="item-price"><%= String.format("%,.0f", itemTotal) %> đ</td>
+                            <td><%= String.format("%,.0f", detail.getProduct().getPrice()) %> đ</td>
+                            <td><%= detail.getQuantity() %></td>
+                            <td><%= String.format("%,.0f", itemTotal) %> đ</td>
                         </tr>
                         <%
                             }
@@ -640,9 +660,9 @@
                 <div class="staff-info">
                     <div class="staff-name">
                         <%
-                            if (invoice.getServer() != null && invoice.getServer().getUser() != null) {
+                            if (invoice.getServer() != null) {
                         %>
-                        Nhân viên: <strong><%= invoice.getServer().getUser().getFullName() %></strong>
+                        Nhân viên: <strong><%= invoice.getServer().getFullName() %></strong>
                         <%
                             } else {
                         %>
