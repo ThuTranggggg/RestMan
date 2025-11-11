@@ -3,6 +3,7 @@ package servlet;
 import dao.InvoiceDAO;
 import dao.OrderDAO;
 import model.Invoice;
+import model.Order;
 import model.OrderDetail;
 
 import javax.servlet.ServletException;
@@ -47,12 +48,14 @@ public class InvoiceServlet extends HttpServlet {
                 return;
             }
             
-            // Lấy chi tiết đơn hàng bằng orderId, không phải invoice.getId()
+            // Tạo Order object với orderId để truyền vào DAO
             OrderDAO orderDAO = new OrderDAO();
-            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(invoice.getOrderId());
+            Order order = new Order();
+            order.setId(invoice.getOrderId());
             
-            // Tính tổng tiền bằng orderId
-            double total = orderDAO.calculateOrderTotal(invoice.getOrderId());
+            // Lấy chi tiết đơn hàng và tổng tiền bằng Order object
+            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(order);
+            double total = orderDAO.calculateOrderTotal(order);
             
             request.setAttribute("invoice", invoice);
             request.setAttribute("orderDetails", orderDetails);

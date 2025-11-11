@@ -14,7 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO extends DAO {
-    public List<OrderDetail> getOrderDetails(int orderId) throws SQLException {
+    public List<OrderDetail> getOrderDetails(Order order) throws SQLException {
+        if (order == null) {
+            return new ArrayList<>();
+        }
+        
         List<OrderDetail> details = new ArrayList<>();
         String sql = "SELECT od.id, od.quantity, od.tblProductid, " +
                      "p.id as product_id, p.name, p.price, p.type, p.imageUrl " +
@@ -23,7 +27,7 @@ public class OrderDAO extends DAO {
                      "WHERE od.tblOrderid = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, orderId);
+            ps.setInt(1, order.getId());
             ResultSet rs = ps.executeQuery();
             
             while (rs.next()) {
@@ -34,15 +38,11 @@ public class OrderDAO extends DAO {
                 product.setType(rs.getString("p.type"));
                 product.setImageUrl(rs.getString("p.imageUrl"));
                 
-                //Tạo Order object (không null)
-                Order order = new Order();
-                order.setId(orderId);
-                
                 OrderDetail detail = new OrderDetail(
                     rs.getInt("od.id"),
                     rs.getInt("od.quantity"),
                     product,
-                    order  //order không null
+                    order
                 );
                 details.add(detail);
             }
@@ -114,14 +114,18 @@ public class OrderDAO extends DAO {
         return null;
     }
 
-    public double calculateOrderTotal(int orderId) throws SQLException {
+    public double calculateOrderTotal(Order order) throws SQLException {
+        if (order == null) {
+            return 0.0;
+        }
+        
         String sql = "SELECT SUM(od.quantity * p.price) as total " +
                      "FROM tblOrderDetail od " +
                      "INNER JOIN tblProduct p ON od.tblProductid = p.id " +
                      "WHERE od.tblOrderid = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, orderId);
+            ps.setInt(1, order.getId());
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {

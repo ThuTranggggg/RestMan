@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-@WebServlet(name = "LinkServerlet", urlPatterns = {"/link"})
-public class LinkServerlet extends HttpServlet {
+
+@WebServlet(name = "LinkServlet", urlPatterns = {"/link"})
+public class LinkServlet extends HttpServlet {
 
     private static final String VIEW_BASE = "/WEB-INF/Customer/";
 
@@ -44,7 +45,7 @@ public class LinkServerlet extends HttpServlet {
                     req.setAttribute("keyword", kw);
                 } else {
                     // Initial page load or empty search — load all products
-                    list = dao.getAllProducts(contextPath);
+                    list = dao.getAllProducts(contextPath); // ✅ FIX: Thêm contextPath
                     req.setAttribute("keyword", "");
                 }
                 dao.closeQuietly();

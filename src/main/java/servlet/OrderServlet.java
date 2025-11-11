@@ -50,7 +50,7 @@ public class OrderServlet extends HttpServlet {
             }
             
             // Lấy order ID của bàn
-            Order orderFromTable = tableDAO.getOrderByTableId(tableId);
+            Order orderFromTable = tableDAO.getOrderByTableId(table);
             
             // Nếu chưa có order, báo lỗi (không tạo order mới)
             if (orderFromTable == null) {
@@ -69,10 +69,10 @@ public class OrderServlet extends HttpServlet {
             }
             
             // Lấy danh sách chi tiết đơn hàng
-            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(order.getId());
+            List<OrderDetail> orderDetails = orderDAO.getOrderDetails(order);
             
             // Tính tổng tiền
-            double total = orderDAO.calculateOrderTotal(order.getId());
+            double total = orderDAO.calculateOrderTotal(order);
             
             // Set attributes
             request.setAttribute("order", order);

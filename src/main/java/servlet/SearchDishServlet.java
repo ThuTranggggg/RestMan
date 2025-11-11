@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "SearchDishServerlet", urlPatterns = {"/searchDish"})
-public class SearchDishServerlet extends HttpServlet {
+@WebServlet(name = "SearchDishServlet", urlPatterns = {"/searchDish"})
+public class SearchDishServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

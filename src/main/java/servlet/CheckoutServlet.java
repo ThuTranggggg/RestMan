@@ -62,7 +62,8 @@ public class CheckoutServlet extends HttpServlet {
             
             // ✅ Tạo Invoice extends Order (kế thừa các thuộc tính từ Order)
             Invoice invoice = new Invoice();
-            invoice.setId(order.getId());
+            invoice.setId(order.getId());  // Set Invoice ID (cho tương thích)
+            invoice.setOrderId(order.getId());  // ✅ QUAN TRỌNG: Set orderId để insert vào DB
             invoice.setCustomer(order.getCustomer());
             invoice.setTable(order.getTable());
             invoice.setServer(server);
@@ -71,34 +72,48 @@ public class CheckoutServlet extends HttpServlet {
             
             // Step 3: Gọi DAO 
             InvoiceDAO invoiceDAO = new InvoiceDAO();
-            int invoiceId = invoiceDAO.createInvoice(orderId, staff.getId(), bonusPoint);
+            int invoiceId = invoiceDAO.createInvoice(invoice);
+            
+            System.out.println("✓ Created invoice: invoiceId=" + invoiceId + ", orderId=" + order.getId());
+            
+            System.out.println("✓ Created invoice: invoiceId=" + invoiceId + ", orderId=" + order.getId());
             
             if (invoiceId > 0) {
                 // ✅ Cộng điểm thẻ thành viên cho khách hàng
-                if (order.getCustomer() != null && bonusPoint > 0) {
+                if (order.getCustomer() != null && order.getCustomer().getMembercard() != null && bonusPoint > 0) {
                     try {
-                        invoiceDAO.addBonusPointsToMembercard(order.getCustomer().getId(), bonusPoint);
+                        System.out.println("✓ Adding bonus points: " + bonusPoint + " to customer " + order.getCustomer().getId());
+                        invoiceDAO.addBonusPointsToMembercard(order.getCustomer(), bonusPoint);
                     } catch (Exception e) {
                         // Log lỗi nhưng không dừng quy trình
-                        System.err.println("Lỗi cộng điểm thành viên: " + e.getMessage());
+                        System.err.println("✗ Lỗi cộng điểm thành viên: " + e.getMessage());
+                        e.printStackTrace();
                     }
                 }
                 
                 // ✅ Không xóa Order - để lưu lịch sử
                 // Cập nhật trạng thái bàn về 0 (trống)
                 TableDAO tableDAO = new TableDAO();
-                tableDAO.updateTableStatus(order.getTable().getId(), 0);
+                order.getTable().setStatus(0);
+                System.out.println("✓ Updating table status to 0 for tableId=" + order.getTable().getId());
+                System.out.println("✓ Updating table status to 0 for tableId=" + order.getTable().getId());
+                tableDAO.updateTableStatus(order.getTable());
                 
+                System.out.println("✓ Checkout completed successfully, redirecting to invoice page");
                 // Redirect tới trang invoice
                 response.sendRedirect(request.getContextPath() + "/invoice?id=" + invoiceId);
             } else {
+                System.err.println("✗ Failed to create invoice, invoiceId=" + invoiceId);
                 request.setAttribute("error", "Lỗi khi tạo hóa đơn");
                 request.getRequestDispatcher("/WEB-INF/Staff/OrderPage.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {
+            System.err.println("✗ NumberFormatException: " + e.getMessage());
+            e.printStackTrace();
             request.setAttribute("error", "Dữ liệu không hợp lệ");
             request.getRequestDispatcher("/WEB-INF/Staff/OrderPage.jsp").forward(request, response);
         } catch (SQLException e) {
+            System.err.println("✗ SQLException: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "Lỗi cơ sở dữ liệu: " + e.getMessage());
             request.getRequestDispatcher("/WEB-INF/Staff/OrderPage.jsp").forward(request, response);

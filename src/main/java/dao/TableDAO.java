@@ -34,7 +34,11 @@ public class TableDAO extends DAO {
     /**
      * Lấy thông tin order của bàn (chỉ lấy tên khách hàng và membercard)
      */
-    public Order getOrderByTableId(int tableId) throws SQLException {
+    public Order getOrderByTableId(Table table) throws SQLException {
+        if (table == null) {
+            return null;
+        }
+        
         String sql = "SELECT o.id, o.tblTableid, o.tblCustomertblUserid, " +
                      "u.id as customer_id, u.fullName, " +
                      "c.tblMemberCardid, m.point " +
@@ -45,7 +49,7 @@ public class TableDAO extends DAO {
                      "WHERE o.tblTableid = ? ORDER BY o.id DESC LIMIT 1";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, tableId);
+            ps.setInt(1, table.getId());
             ResultSet rs = ps.executeQuery();
             
             if (rs.next()) {
@@ -53,8 +57,6 @@ public class TableDAO extends DAO {
                 order.setId(rs.getInt("o.id"));
                 
                 // Set table
-                Table table = new Table();
-                table.setId(tableId);
                 order.setTable(table);
                 
                 // Set customer (chỉ lấy tên và membercard)
@@ -123,19 +125,29 @@ public class TableDAO extends DAO {
             // Tìm theo ID hoặc tên bàn chứa keyword
             sql = "SELECT DISTINCT t.id, t.name, t.status, t.description " +
                   "FROM tblTable t " +
-                  "LEFT JOIN tblOrder o ON t.id = o.tblTableid " +
-                  "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
-                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
-                  "WHERE t.status = 1 AND (CAST(t.id AS CHAR) LIKE ? OR t.name LIKE ? OR u.fullName LIKE ?) " +
+                  "WHERE t.status = 1 AND " +
+                  "(CAST(t.id AS CHAR) LIKE ? OR t.name LIKE ? OR " +
+                  "EXISTS (" +
+                  "  SELECT 1 FROM tblOrder o2 " +
+                  "  LEFT JOIN tblUser u2 ON o2.tblCustomertblUserid = u2.id " +
+                  "  WHERE o2.tblTableid = t.id " +
+                  "  AND o2.id NOT IN (SELECT tblOrderid FROM tblInvoice) " +
+                  "  AND u2.fullName LIKE ?" +
+                  ")) " +
                   "ORDER BY t.id";
         } else {
             // Tìm theo tên bàn hoặc tên khách hàng
             sql = "SELECT DISTINCT t.id, t.name, t.status, t.description " +
                   "FROM tblTable t " +
-                  "LEFT JOIN tblOrder o ON t.id = o.tblTableid " +
-                  "LEFT JOIN tblCustomer c ON o.tblCustomertblUserid = c.tblUserid " +
-                  "LEFT JOIN tblUser u ON c.tblUserid = u.id " +
-                  "WHERE t.status = 1 AND (t.name LIKE ? OR u.fullName LIKE ?) " +
+                  "WHERE t.status = 1 AND " +
+                  "(t.name LIKE ? OR " +
+                  "EXISTS (" +
+                  "  SELECT 1 FROM tblOrder o2 " +
+                  "  LEFT JOIN tblUser u2 ON o2.tblCustomertblUserid = u2.id " +
+                  "  WHERE o2.tblTableid = t.id " +
+                  "  AND o2.id NOT IN (SELECT tblOrderid FROM tblInvoice) " +
+                  "  AND u2.fullName LIKE ?" +
+                  ")) " +
                   "ORDER BY t.id";
         }
         
@@ -166,12 +178,16 @@ public class TableDAO extends DAO {
         return tables;
     }
 
-    public boolean updateTableStatus(int tableId, int status) throws SQLException {
+    public boolean updateTableStatus(Table table) throws SQLException {
+        if (table == null) {
+            return false;
+        }
+        
         String sql = "UPDATE tblTable SET status = ? WHERE id = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-            ps.setInt(1, status);
-            ps.setInt(2, tableId);
+            ps.setInt(1, table.getStatus());
+            ps.setInt(2, table.getId());
             return ps.executeUpdate() > 0;
         }
     }

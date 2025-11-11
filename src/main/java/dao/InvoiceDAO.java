@@ -22,30 +22,46 @@ public class InvoiceDAO extends DAO {
         }
     }
 
-    public int createInvoice(int orderId, int staffId, int bonusPoint) throws SQLException {
+    public int createInvoice(Invoice invoice) throws SQLException {
+        System.out.println("📝 createInvoice called with orderId=" + invoice.getOrderId() + 
+                          ", serverId=" + (invoice.getServer() != null ? invoice.getServer().getId() : "null") +
+                          ", bonusPoint=" + invoice.getBonusPoint());
+        
         String sql = "INSERT INTO tblInvoice (tblOrderid, tblServertblStafftblUserid, bonusPoint, datetime) " +
                      "VALUES (?, ?, ?, NOW())";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, orderId);
+            ps.setInt(1, invoice.getOrderId());
             
             // Kiểm tra staffId có tồn tại trong tblServer
-            if (isServerExists(staffId)) {
-                ps.setInt(2, staffId);
+            if (invoice.getServer() != null && isServerExists(invoice.getServer().getId())) {
+                ps.setInt(2, invoice.getServer().getId());
+                System.out.println("✓ Server exists: " + invoice.getServer().getId());
             } else {
                 ps.setNull(2, java.sql.Types.INTEGER);
+                System.out.println("⚠ Server not found or null, setting NULL");
             }
             
-            ps.setInt(3, bonusPoint);
+            ps.setInt(3, invoice.getBonusPoint());
             
+            System.out.println("🔄 Executing SQL: " + sql);
             int affectedRows = ps.executeUpdate();
+            System.out.println("✓ Affected rows: " + affectedRows);
+            
             if (affectedRows > 0) {
                 ResultSet generatedKeys = ps.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1);
+                    int generatedId = generatedKeys.getInt(1);
+                    System.out.println("✓ Generated invoice ID: " + generatedId);
+                    return generatedId;
                 }
             }
+        } catch (SQLException e) {
+            System.err.println("✗ SQL Error in createInvoice: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
+        System.err.println("✗ Failed to create invoice, returning -1");
         return -1;
     }
 
@@ -132,13 +148,16 @@ public class InvoiceDAO extends DAO {
     }
 
 
-    public boolean addBonusPointsToMembercard(int customerId, int bonusPoints) throws SQLException {
-        String sql = "UPDATE tblMemberCard SET point = point + ? " +
-                     "WHERE id = (SELECT tblMemberCardid FROM tblCustomer WHERE tblUserid = ?)";
+    public boolean addBonusPointsToMembercard(Customer customer, int bonusPoints) throws SQLException {
+        if (customer == null || customer.getMembercard() == null) {
+            return false;
+        }
+        
+        String sql = "UPDATE tblMemberCard SET point = point + ? WHERE id = ?";
         
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             ps.setInt(1, bonusPoints);
-            ps.setInt(2, customerId);
+            ps.setInt(2, customer.getMembercard().getId());
             
             int affectedRows = ps.executeUpdate();
             return affectedRows > 0;

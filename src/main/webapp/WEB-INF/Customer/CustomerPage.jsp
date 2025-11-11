@@ -20,15 +20,17 @@
         color: #0f172a;
         -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
         min-height:100vh;
+        overflow: hidden;
     }
 
     /* Container: full viewport to position header and center button */
     .wrap{ 
-        min-height:100vh; 
+        height: 100vh;
         display:flex;
         flex-direction: column;
         padding:0;
         position: relative;
+        overflow: hidden;
     }
 
     /* Header styling */
@@ -90,8 +92,11 @@
         box-shadow:none;
         padding:0;
         position:relative;
-        min-height:100vh;
-        margin-top: 80px;
+        height: 100vh;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* Main content area */
@@ -100,7 +105,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: calc(100vh - 160px);
         padding: 20px;
     }
 

@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "ViewDishDetailServerlet", urlPatterns = {"/viewDish"})
-public class ViewDishDetailServerlet extends HttpServlet {
+@WebServlet(name = "ViewDishDetailServlet", urlPatterns = {"/viewDish"})
+public class ViewDishDetailServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
